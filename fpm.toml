@@ -33,12 +33,6 @@ homepage = "https://github.com/willklausler/fortran_rationals"
 [install]
    library = false
 
-[profile.debug]
-optimize = "-O0 -g -Wall -Wextra"
-
-[profile.release]
-optimize = "-O2"
-
 # example
 #[[test]]
 #name="runTests"
