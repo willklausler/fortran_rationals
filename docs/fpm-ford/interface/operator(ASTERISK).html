@@ -10,7 +10,7 @@
     <meta name="author" content="John Doe" >
     <link rel="icon" href="../favicon.png">
 
-    <title>mysin &ndash; easy</title>
+    <title>operator(*) &ndash; easy</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -62,6 +62,9 @@
                   <a class="nav-link" href="../lists/procedures.html">Procedures</a>
                 </li>
                 <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+                <li class="nav-item">
                   <a class="nav-link" href="../lists/programs.html">Programs</a>
                 </li>
             </ul>
@@ -77,8 +80,8 @@
 
     <div class="container">
   <div class="row">
-    <h1>mysin
-      <small>Function</small>
+    <h1>operator(*)
+      <small>Interface</small>
       
     </h1>
       <div class="container p-2 mb-4 bg-light border rounded-3">
@@ -88,21 +91,21 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="38.5% of total for procedures.">5 statements</a>
+                 title="<p> 2.9% of total for procedures.</p>Including implementation: 35 statements, 33.3% of total for procedures.">3 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/easy__sample.f90"> Source File</a>
+              <a href="../src/rationals.f90"> Source File</a>
             </li>
         </ul>
       </div>
       <div class="col">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-end mb-0">
-                <li class="breadcrumb-item"><a href='../sourcefile/easy__sample.f90.html'>easy__sample.f90</a></li>
-                <li class="breadcrumb-item"><a href='../module/easy__sample.html'>easy__sample</a></li>
-            <li class="breadcrumb-item active" aria-current="page">mysin</li>
+                <li class="breadcrumb-item"><a href='../sourcefile/rationals.f90.html'>rationals.f90</a></li>
+                <li class="breadcrumb-item"><a href='../module/rationals.html'>rationals</a></li>
+            <li class="breadcrumb-item active" aria-current="page">operator(*)</li>
           </ol>
         </nav>
       </div>
@@ -117,10 +120,10 @@
   </script>
 
   </div>
-  
+
   <div class="row">
     <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
-      <div id="sidebar">
+        <div id="sidebar">
       <h3>Contents</h3>
   
   
@@ -140,29 +143,42 @@
   
   
   
-  
-  
-    <div class="card card-primary">
-      <div class="card-header text-left"><h3 class="card-title">Source Code</h3></div>
-      <div class="list-group">
-        <a class="list-group-item" href="../proc/mysin.html#src">mysin</a>
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#modprocs-0"
+         aria-expanded="false" aria-controls="modprocs-0">
+         <h4 class="card-header bg-primary text-white">Module Procedures</h4>
+      </a>
+      <div id="modprocs-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../interface/operator(ASTERISK).html#moduleprocedure-rat_mul_rat">rat_mul_rat</a>
+            <a class="list-group-item" href="../interface/operator(ASTERISK).html#moduleprocedure-rat_mul_int">rat_mul_int</a>
+            <a class="list-group-item" href="../interface/operator(ASTERISK).html#moduleprocedure-int_mul_rat">int_mul_rat</a>
+        </div>
       </div>
     </div>
+
+  
 
 
   </div>
 
     </div>
-    
+
     <div class="col-md-9" id='text'>
-    <h2>public pure elemental function mysin(r) result(answer)  
-</h2>
-    
+      <h2>public interface operator(*)</h2>
+      
 
 
 
-    <h3>Arguments</h3>
-        <table class="table table-striped varlist">
+        <h2>Module Procedures</h2>
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-rat_mul_rat"></span> <h3>private pure elemental function rat_mul_rat(a, b) result(c)  
+</h3></div>
+    <div class="card-body">
+        <p>Multiply two rationals safely</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
     <thead>
       <tr>
         <th scope="col">Type</th>
@@ -174,58 +190,166 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-r~2"></span>
-              real,
+              <span class="anchor" id="variable-a~7"></span>
+              type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>r</strong></td>
+            <td><strong>a</strong></td>
             <td>
-                <p>MYSIN(3f) is a trivial function for demonstration purposes.</p>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~13"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
             </td>
         </tr>
     </tbody>
   </table>
 
-      <h3>Return Value
-        <small>
-          <span class="anchor" id="variable-answer~2"></span>
-          real
-        </small>
-      </h3>
-      
-    <br>
-
-
-    
+    <h4>
+    Return Value
+    <small>type(<a href='../type/rational.html'>rational</a>)</small>
+    </h4>
     
 
-    
-    
-
-
-
-    
-    <section>
-    <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="k">elemental pure function </span><span class="n">mysin</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">answer</span><span class="p">)</span><span class="w"></span>
-<span class="c">!&gt; MYSIN(3f) is a trivial function for demonstration purposes.</span>
-<span class="c">!  It calls the intrinsic SIN</span>
-<span class="kt">real</span><span class="p">,</span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">r</span><span class="w"></span>
-<span class="kt">real</span><span class="w">            </span><span class="kd">::</span><span class="w"> </span><span class="n">answer</span><span class="w"></span>
-<span class="w">   </span><span class="n">answer</span><span class="o">=</span><span class="nb">sin</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="w"></span>
-<span class="k">end function </span><span class="n">mysin</span><span class="w"></span>
-</pre></div>
-
-    </section>
-    <br>
-    
     </div>
   </div>
 
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-rat_mul_int"></span> <h3>private pure elemental function rat_mul_int(a, b) result(c)  
+</h3></div>
+    <div class="card-body">
+        <p>Multiply rational and integer</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~8"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~14"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/rational.html'>rational</a>)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-int_mul_rat"></span> <h3>private pure elemental function int_mul_rat(a, b) result(c)  
+</h3></div>
+    <div class="card-body">
+        <p>Multiple integer and rational</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~9"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~15"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/rational.html'>rational</a>)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+</div>
+  </div>
       <hr>
     </div> <!-- /container -->
     <footer>
@@ -241,7 +365,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-09-04 16:48 +0000             </p>
+ on 2025-09-04 16:58 +0000             </p>
           </div>
         </div>
         <br>

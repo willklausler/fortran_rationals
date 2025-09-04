@@ -10,8 +10,7 @@
     <meta name="author" content="John Doe" >
     <link rel="icon" href="../favicon.png">
 
-    <title>All Files &ndash; easy
-</title>
+    <title>abs &ndash; easy</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -80,28 +79,142 @@
     </div>
 
     <div class="container">
-      <div class="row" id='text'>
-        <div class="col-lg-12">
-			 <h1>Source Files</h1>
-			 <table class="table table-striped">
-			 <thead><tr><th>File</th><th>Description</th></tr></thead>
-			 <tbody>
-			   <tr>
-                 <td><a href='../sourcefile/rationals.f90.html'>rationals.f90</a></td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../sourcefile/rationals_example.f90.html'>rationals_example.f90</a></td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../sourcefile/rationals_test.f90.html'>rationals_test.f90</a></td>
-                 <td></td>
-               </tr>
-			 </tbody></table>
-			 
+  <div class="row">
+    <h1>abs
+      <small>Interface</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title="<p> 2.9% of total for procedures.</p>Including implementation: 8 statements,  7.6% of total for procedures.">3 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/rationals.f90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../sourcefile/rationals.f90.html'>rationals.f90</a></li>
+                <li class="breadcrumb-item"><a href='../module/rationals.html'>rationals</a></li>
+            <li class="breadcrumb-item active" aria-current="page">abs</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
+  </script>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+        <div id="sidebar">
+      <h3>Contents</h3>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#modprocs-0"
+         aria-expanded="false" aria-controls="modprocs-0">
+         <h4 class="card-header bg-primary text-white">Module Procedures</h4>
+      </a>
+      <div id="modprocs-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../interface/abs.html#moduleprocedure-rat_abs">rat_abs</a>
         </div>
       </div>
+    </div>
+
+  
+
+
+  </div>
+
+    </div>
+
+    <div class="col-md-9" id='text'>
+      <h2>public interface abs</h2>
+      
+
+
+
+        <h2>Module Procedures</h2>
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-rat_abs"></span> <h3>private pure elemental function rat_abs(b) result(a)  
+</h3></div>
+    <div class="card-body">
+        <p>Absolute value</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~39"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/rational.html'>rational</a>)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+</div>
+  </div>
       <hr>
     </div> <!-- /container -->
     <footer>
