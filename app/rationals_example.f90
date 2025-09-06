@@ -26,7 +26,7 @@ subroutine ex1()
   write(*,*) rat_pi
 
   do i = 1,8
-    write(*,*) rat(int(pi*10**i), 10**i)
+    write(*,*) rational(int(pi*10**i), 10**i)
   end do ! i
   write(*,*)
 

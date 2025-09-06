@@ -60,19 +60,19 @@ program rationals_test
   write(*,fmt2)
 
   write(*,fmt1) "Constructor"
-  ! a = rat(1, 1)
+  ! a = rational(1, 1)
   ! if ((a%get_num() /= 1) .or. (a%get_den() /= 1)) then
   !   error stop "Default constructor failed"
   ! end if
-  a = rat(3)
+  a = rational(3)
   if ((a%get_num() /= 3) .or. (a%get_den() /= 1)) then
     error stop "Integer constructor failed"
   end if
-  a = rat(0.5_rk)
+  a = rational(0.5_rk)
   if ((a%get_num() /= 1) .or. (a%get_den() /= 2)) then
     error stop "Real constructor failed"
   end if
-  a = rat("1/2")
+  a = rational("1/2")
   if ((a%get_num() /= 1) .or. (a%get_den() /= 2)) then
     error stop "Character constructor failed"
   end if
@@ -149,8 +149,8 @@ program rationals_test
   write(*,fmt2)
 
   write(*,fmt1) "Strict superiority"
-  a = rat(3,2)
-  b = rat(2,3)
+  a = rational(3,2)
+  b = rational(2,3)
   if (.not.(a > b)) then
     error stop "Rational-rational strict superiority failed"
   end if
@@ -163,8 +163,8 @@ program rationals_test
   write(*,fmt2)
 
   write(*,fmt1) "Strict inferiority"
-  a = rat(2,3)
-  b = rat(3,2)
+  a = rational(2,3)
+  b = rational(3,2)
   if (.not.(a < b)) then
     error stop "Rational-rational strict inferiority failed"
   end if
@@ -177,8 +177,8 @@ program rationals_test
   write(*,fmt2)
 
   write(*,fmt1) "Superiority"
-  a = rat(3,2)
-  b = rat(2,3)
+  a = rational(3,2)
+  b = rational(2,3)
   if (.not.(a >= b)) then
     error stop "Rational-rational superiority failed"
   end if
@@ -191,8 +191,8 @@ program rationals_test
   write(*,fmt2)
 
   write(*,fmt1) "Inferiority"
-  a = rat(2,3)
-  b = rat(3,2)
+  a = rational(2,3)
+  b = rational(3,2)
   if (.not.(a <= b)) then
     error stop "Rational-rational inferiority failed"
   end if
@@ -207,78 +207,78 @@ program rationals_test
   write(*,"(A)") "Arithmetic"
 
   write(*,fmt1) "Addition"
-  a = rat(2,3)
-  b = rat(3,2)
-  if (a + b /= rat(13, 6)) then
+  a = rational(2,3)
+  b = rational(3,2)
+  if (a + b /= rational(13, 6)) then
     error stop "Rational-rational addition failed"
   end if
-  if (a + 1 /= rat(5, 3)) then
+  if (a + 1 /= rational(5, 3)) then
     error stop "Rational-integer addition failed"
   end if
-  if (1 + a /= rat(5, 3)) then
+  if (1 + a /= rational(5, 3)) then
     error stop "Integer-rational addition failed"
   end if
   write(*,fmt2)
 
   write(*,fmt1) "Subtraction"
-  a = rat(2,3)
-  b = rat(3,2)
-  if (a - b /= rat(-5, 6)) then
+  a = rational(2,3)
+  b = rational(3,2)
+  if (a - b /= rational(-5, 6)) then
     error stop "Rational-rational subtraction failed"
   end if
-  if (a - 1 /= rat(-1, 3)) then
+  if (a - 1 /= rational(-1, 3)) then
     error stop "Rational-integer subtraction failed"
   end if
-  if (1 - a /= rat(1, 3)) then
+  if (1 - a /= rational(1, 3)) then
     error stop "Integer-rational subtraction failed"
   end if
   write(*,fmt2)
 
   write(*,fmt1) "Multiplication"
-  a = rat(2,3)
-  b = rat(3,2)
-  if (a*b /= rat(1, 1)) then
+  a = rational(2,3)
+  b = rational(3,2)
+  if (a*b /= rational(1, 1)) then
     error stop "Rational-rational multiplication failed"
   end if
-  if (a*2 /= rat(4, 3)) then
+  if (a*2 /= rational(4, 3)) then
     error stop "Rational-integer multiplication failed"
   end if
-  if (2*a /= rat(4, 3)) then
+  if (2*a /= rational(4, 3)) then
     error stop "Integer-rational multiplication failed"
   end if
   write(*,fmt2)
 
   write(*,fmt1) "Division"
-  a = rat(2,3)
-  b = rat(3,2)
-  if (a/b /= rat(4, 9)) then
+  a = rational(2,3)
+  b = rational(3,2)
+  if (a/b /= rational(4, 9)) then
     error stop "Rational-rational division failed"
   end if
-  if (a/2 /= rat(1, 3)) then
+  if (a/2 /= rational(1, 3)) then
     error stop "Rational-integer division failed"
   end if
-  if (2/a /= rat(3, 1)) then
+  if (2/a /= rational(3, 1)) then
     error stop "Integer-rational division failed"
   end if
   write(*,fmt2)
 
   write(*,fmt1) "Reciprocal"
-  a = rat(2,3)
+  a = rational(2,3)
   if (a%inverse() /= 1/a) then
     error stop "Reciprocation failed"
   end if
   write(*,fmt2)
 
   write(*,fmt1) "Exponentiation"
-  a = rat(2,3)
-  if (a**2 /= rat(4, 9)) then
+  a = rational(2,3)
+  if (a**2 /= rational(4, 9)) then
     error stop "Rational-integer exponentiation failed"
   end if
   write(*,fmt2)
 
   write(*,fmt1) "Edge cases"
-  a = rat(yoog, 2_ir)
-  b = rat(2_ir, yoog)
+  a = rational(yoog, 2_ir)
+  b = rational(2_ir, yoog)
   if (a*b /= 1) then
     error stop "Multiplication overflow failed"
   end if
@@ -287,62 +287,62 @@ program rationals_test
   write(*,"(A)") "Functions"
 
   write(*,fmt1) "abs"
-  a = rat(-1, 2)
-  if (abs(a) /= rat(1, 2)) then
+  a = rational(-1, 2)
+  if (abs(a) /= rational(1, 2)) then
     error stop "Absolute value failed"
   end if
-  a = rat(1, 2)
-  if (abs(a) /= rat(1, 2)) then
+  a = rational(1, 2)
+  if (abs(a) /= rational(1, 2)) then
     error stop "Absolute value failed"
   end if
   write(*,fmt2)
 
   write(*,fmt1) "min"
-  a = rat(2, 3)
-  b = rat(3, 2)
+  a = rational(2, 3)
+  b = rational(3, 2)
   if (min(a,b) /= a) then
     error stop "Rational-rational minimum failed"
   end if
   write(*,fmt2)
 
   write(*,fmt1) "max"
-  a = rat(2, 3)
-  b = rat(3, 2)
+  a = rational(2, 3)
+  b = rational(3, 2)
   if (max(a,b) /= b) then
     error stop "Rational-rational maximum failed"
   end if
   write(*,fmt2)
 
   write(*,fmt1) "dot_product"
-  u = [rat(1, 2), rat(2, 3)]
-  v = [rat(3, 4), rat(4, 5)]
-  if (dot_product(u, v) /= rat(109, 120)) then
+  u = [rational(1, 2), rational(2, 3)]
+  v = [rational(3, 4), rational(4, 5)]
+  if (dot_product(u, v) /= rational(109, 120)) then
     error stop "dot_product failed"
   end if
   write(*,fmt2)
 
   write(*,fmt1) "matmul"
-  m(:,1) = [rat(1, 2), rat(1, 3)]
-  m(:,2) = [rat(1, 1), rat(2, 3)]
-  u = [rat(1, 4), rat(3, 4)]
-  v = [rat(7, 8), rat(7, 12)]
+  m(:,1) = [rational(1, 2), rational(1, 3)]
+  m(:,2) = [rational(1, 1), rational(2, 3)]
+  u = [rational(1, 4), rational(3, 4)]
+  v = [rational(7, 8), rational(7, 12)]
   if (.not.all(matmul(m, u) == v)) then
     error stop "matmul for matrix-vector failed"
   end if
-  n(:,1) = [rat(1, 4), rat(3, 4)]
-  n(:,2) = [rat(1, 2), rat(1, 1)]
-  p(:,1) = [rat(7, 8), rat(7, 12)]
-  p(:,2) = [rat(5, 4), rat(5, 6)]
+  n(:,1) = [rational(1, 4), rational(3, 4)]
+  n(:,2) = [rational(1, 2), rational(1, 1)]
+  p(:,1) = [rational(7, 8), rational(7, 12)]
+  p(:,2) = [rational(5, 4), rational(5, 6)]
   if (.not.all(matmul(m, n) == p)) then
     error stop "matmul for matrix-matrix failed"
   end if
   write(*,fmt2)
 
   write(*,fmt1) "transpose"
-  m(:,1) = [rat(1, 2), rat(1, 3)]
-  m(:,2) = [rat(1, 1), rat(2, 3)]
-  n(:,1) = [rat(1, 2), rat(1, 1)]
-  n(:,2) = [rat(1, 3), rat(2, 3)]
+  m(:,1) = [rational(1, 2), rational(1, 3)]
+  m(:,2) = [rational(1, 1), rational(2, 3)]
+  n(:,1) = [rational(1, 2), rational(1, 1)]
+  n(:,2) = [rational(1, 3), rational(2, 3)]
   if (.not.all(transpose(m) == n)) then
     error stop "transpose failed"
   end if
