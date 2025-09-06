@@ -33,6 +33,7 @@ module rationals
     private
     integer(ir) :: num = 0   !! Numerator
     integer(ir) :: den = 1   !! Denominator
+    logical :: o             !! Dummy to offset default constructor interface
   contains
     procedure :: simplify
     procedure :: get_num, get_den
@@ -104,10 +105,10 @@ module rationals
     procedure :: rat_le_rat, rat_le_int, int_le_rat
   end interface operator(<=)
 
-  interface rat
+  interface rational
     module procedure :: rat_real_const, rat_char_const, rat_int_const
     module procedure :: rat_const_ik, rat_const_ir
-  end interface rat
+  end interface rational
 
   interface char
     procedure :: rat_str
@@ -158,7 +159,7 @@ module rationals
     module procedure :: rat_rand
   end interface random_number
 
-  public :: rational, rat
+  public :: rational
   public :: assignment(=)
   public :: operator(+), operator(-), operator(*), operator(/), operator(**)
   public :: operator(==), operator(/=)
