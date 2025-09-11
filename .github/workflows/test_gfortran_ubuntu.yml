@@ -33,10 +33,10 @@ jobs:
            echo $PATH
            pwd
            uname -a
-           wget https://raw.githubusercontent.com/fortran-lang/fpm/refs/tags/v0.12.0/src/fpm.f90
+           wget https://raw.githubusercontent.com/fortran-lang/fpm/main/src/fpm.f90
            mkdir -p /home/runner/.local/bin tmp
            ulimit -c unlimited -d unlimited -f unlimited -m unlimited -s unlimited -t unlimited -v unlimited -x unlimited
-           gfortran fpm.F90 -Itmp -Jtmp -static -o /home/runner/.local/bin/fpm
+           gfortran fpm.f90 -Itmp -Jtmp -static -o /home/runner/.local/bin/fpm
            rm -f tmp/*.mod
            ls -l
 
