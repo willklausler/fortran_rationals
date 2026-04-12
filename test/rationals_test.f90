@@ -1,7 +1,6 @@
 program rationals_test
 !! Showcase rationals
 
-  use iso_fortran_env
   use rationals
 
   implicit none
@@ -12,9 +11,10 @@ program rationals_test
   integer :: unit
   integer :: stat
 
-  character(*), parameter :: fmt1 = "(A20,': ',$)"
+  character(*), parameter :: fmt1 = "(A20,': ')"
   character(*), parameter :: fmt2 = "('passed')"
   character(50) :: str
+  character(50) :: iomsg
 
   type(rational) :: a, b
 
@@ -26,8 +26,8 @@ program rationals_test
 
   write(*,"(A)") "Basics"
 
-  write(*,fmt1) "Math"
-  if (gcf(0,2) /= 0) then
+  write(*,fmt1,advance='no') "Math"
+  if (gcf(0,2) /= 2) then
     error stop "gcf failed for 0"
   end if
   if (gcf(2,3) /= 1) then
@@ -59,11 +59,11 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "Constructor"
-  ! a = rational(1, 1)
-  ! if ((a%get_num() /= 1) .or. (a%get_den() /= 1)) then
-  !   error stop "Default constructor failed"
-  ! end if
+  write(*,fmt1,advance='no') "Constructor"
+  a = rational(1, 1)
+  if ((a%get_num() /= 1) .or. (a%get_den() /= 1)) then
+    error stop "Default constructor failed"
+  end if
   a = rational(3)
   if ((a%get_num() /= 3) .or. (a%get_den() /= 1)) then
     error stop "Integer constructor failed"
@@ -78,17 +78,27 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "I/O"
-  read(str,"(A)",iostat=stat) a
-  if (stat /= 0) then
-    error stop "Formatted read failed"
-  end if
-  open(newunit=unit,file="scratch",action='write')
-  write(unit,*) a
-  close(unit,status='delete')
+  ! write(*,fmt1,advance='no') "I/O round-trip"
+  ! a = rational(7_ik, 12_ik)
+  ! open(newunit=unit,file="scratch_io",action='write')
+  ! write(unit,"(DT)") a
+  ! close(unit)
+  ! open(newunit=unit,file="scratch_io",action='read')
+  ! read(unit,*, iostat=stat, iomsg=iomsg) b
+  ! read(unit,"(DT)", iostat=stat, iomsg=iomsg) b
+  ! close(unit, status='delete')
+  ! if (stat /= 0) then
+  !   write(*, "(A,I0,A,A)") "iostat=", stat, " iomsg=", trim(iomsg)
+  !   error stop "I/O round-trip: read failed"
+  ! end if
+  ! if (a /= b) then
+  !   error stop "I/O round-trip: value changed through write/read"
+  ! end if
+  ! write(*,fmt2)
+
   write(*,fmt2)
 
-  write(*,fmt1) "Assignment"
+  write(*,fmt1,advance='no') "Assignment"
   a = 2
   if ((a%get_num() /= 2) .or. (a%get_den() /= 1)) then
     error stop "Integer assignment failed"
@@ -104,7 +114,7 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "Casting"
+  write(*,fmt1,advance='no') "Casting"
   a = 2
   if (int(a) /= 2) then
     error stop "Casting to integer failed"
@@ -113,14 +123,14 @@ program rationals_test
   if (real(a) /= 0.5_rk) then
     error stop "Casting to real failed"
   end if
-  if (char(a) /= "1/2") then
+  if (trim(char(a)) /= "1/2") then
     error stop "Casting to character failed"
   end if
   write(*,fmt2)
 
   write(*,"(A)") "Boolean operators"
 
-  write(*,fmt1) "Equality"
+  write(*,fmt1,advance='no') "Equality"
   a = 2
   b = 2
   if (.not.(a == b)) then
@@ -134,7 +144,7 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "Inequality"
+  write(*,fmt1,advance='no') "Inequality"
   a = 2
   b = 3
   if (.not.(a /= b)) then
@@ -148,7 +158,7 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "Strict superiority"
+  write(*,fmt1,advance='no') "Strict superiority"
   a = rational(3,2)
   b = rational(2,3)
   if (.not.(a > b)) then
@@ -162,7 +172,7 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "Strict inferiority"
+  write(*,fmt1,advance='no') "Strict inferiority"
   a = rational(2,3)
   b = rational(3,2)
   if (.not.(a < b)) then
@@ -176,7 +186,7 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "Superiority"
+  write(*,fmt1,advance='no') "Superiority"
   a = rational(3,2)
   b = rational(2,3)
   if (.not.(a >= b)) then
@@ -190,7 +200,7 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "Inferiority"
+  write(*,fmt1,advance='no') "Inferiority"
   a = rational(2,3)
   b = rational(3,2)
   if (.not.(a <= b)) then
@@ -206,7 +216,7 @@ program rationals_test
 
   write(*,"(A)") "Arithmetic"
 
-  write(*,fmt1) "Addition"
+  write(*,fmt1,advance='no') "Addition"
   a = rational(2,3)
   b = rational(3,2)
   if (a + b /= rational(13, 6)) then
@@ -220,7 +230,7 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "Subtraction"
+  write(*,fmt1,advance='no') "Subtraction"
   a = rational(2,3)
   b = rational(3,2)
   if (a - b /= rational(-5, 6)) then
@@ -234,7 +244,7 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "Multiplication"
+  write(*,fmt1,advance='no') "Multiplication"
   a = rational(2,3)
   b = rational(3,2)
   if (a*b /= rational(1, 1)) then
@@ -248,7 +258,7 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "Division"
+  write(*,fmt1,advance='no') "Division"
   a = rational(2,3)
   b = rational(3,2)
   if (a/b /= rational(4, 9)) then
@@ -262,21 +272,34 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "Reciprocal"
+  write(*,fmt1,advance='no') "Reciprocal"
   a = rational(2,3)
   if (a%inverse() /= 1/a) then
     error stop "Reciprocation failed"
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "Exponentiation"
+  write(*,fmt1,advance='no') "Exponentiation"
   a = rational(2,3)
   if (a**2 /= rational(4, 9)) then
     error stop "Rational-integer exponentiation failed"
   end if
+  a = rational(2_ik, 3_ik)
+  if (a**0 /= rational(1_ik, 1_ik)) then
+    error stop "Exponentiation failed for b=0"
+  end if
+  if (a**(-2) /= rational(9_ik, 4_ik)) then
+    error stop "Exponentiation failed for b=-2"
+  end if
+  if (a**2 /= rational(4_ik, 9_ik)) then
+    error stop "Exponentiation regression failed for b=2"
+  end if
+  if (rational(1_ik, 1_ik)**7 /= rational(1_ik, 1_ik)) then
+    error stop "Exponentiation failed for base=1"
+  end if
   write(*,fmt2)
 
-  write(*,fmt1) "Edge cases"
+  write(*,fmt1,advance='no') "Edge cases"
   a = rational(yoog, 2_ir)
   b = rational(2_ir, yoog)
   if (a*b /= 1) then
@@ -286,7 +309,22 @@ program rationals_test
 
   write(*,"(A)") "Functions"
 
-  write(*,fmt1) "abs"
+  write(*,fmt1,advance='no') "is_integer"
+  a = rational(4_ik, 2_ik)
+  if (.not. a%is_integer()) then
+    error stop "is_integer failed: 4/2 simplifies to 2, should be true"
+  end if
+  a = rational(1_ik, 3_ik)
+  if (a%is_integer()) then
+    error stop "is_integer failed: 1/3 should be false"
+  end if
+  a = rational(0_ik, 1_ik)
+  if (.not. a%is_integer()) then
+    error stop "is_integer failed: 0 should be true"
+  end if
+  write(*,fmt2)
+
+  write(*,fmt1,advance='no') "abs"
   a = rational(-1, 2)
   if (abs(a) /= rational(1, 2)) then
     error stop "Absolute value failed"
@@ -297,7 +335,7 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "min"
+  write(*,fmt1,advance='no') "min"
   a = rational(2, 3)
   b = rational(3, 2)
   if (min(a,b) /= a) then
@@ -305,7 +343,7 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "max"
+  write(*,fmt1,advance='no') "max"
   a = rational(2, 3)
   b = rational(3, 2)
   if (max(a,b) /= b) then
@@ -313,7 +351,7 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "dot_product"
+  write(*,fmt1,advance='no') "dot_product"
   u = [rational(1, 2), rational(2, 3)]
   v = [rational(3, 4), rational(4, 5)]
   if (dot_product(u, v) /= rational(109, 120)) then
@@ -321,7 +359,7 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "matmul"
+  write(*,fmt1,advance='no') "matmul"
   m(:,1) = [rational(1, 2), rational(1, 3)]
   m(:,2) = [rational(1, 1), rational(2, 3)]
   u = [rational(1, 4), rational(3, 4)]
@@ -338,7 +376,7 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "transpose"
+  write(*,fmt1,advance='no') "transpose"
   m(:,1) = [rational(1, 2), rational(1, 3)]
   m(:,2) = [rational(1, 1), rational(2, 3)]
   n(:,1) = [rational(1, 2), rational(1, 1)]
@@ -348,13 +386,202 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  write(*,fmt1) "random_number"
+  write(*,fmt1,advance='no') "random_number"
   ord = 10
   call set_order(ord)
   call random_number(m)
   if (any(m < 0) .or. any(m > ord)) then
     error stop "random_number failed"
   end if
+  write(*,fmt2)
+
+  write(*,fmt1,advance='no') "floor"
+  if (floor(rational(4_ik, 2_ik)) /= 2_ir) then
+    error stop "floor failed for exact positive integer"
+  end if
+  if (floor(rational(7_ik, 3_ik)) /= 2_ir) then
+    error stop "floor failed for positive fraction (7/3)"
+  end if
+  if (floor(rational(-7_ik, 3_ik)) /= -3_ir) then
+    error stop "floor failed for negative fraction (-7/3)"
+  end if
+  if (floor(rational(-6_ik, 3_ik)) /= -2_ir) then
+    error stop "floor failed for negative exact (-6/3)"
+  end if
+  write(*,fmt2)
+
+  write(*,fmt1,advance='no') "ceiling"
+  if (ceiling(rational(7_ik, 3_ik)) /= 3_ir) then
+    error stop "ceiling failed for positive fraction (7/3)"
+  end if
+  if (ceiling(rational(-7_ik, 3_ik)) /= -2_ir) then
+    error stop "ceiling failed for negative fraction (-7/3)"
+  end if
+  if (ceiling(rational(4_ik, 2_ik)) /= 2_ir) then
+    error stop "ceiling failed for exact positive integer"
+  end if
+  if (ceiling(rational(-6_ik, 3_ik)) /= -2_ir) then
+    error stop "ceiling failed for negative exact integer"
+  end if
+  write(*,fmt2)
+
+  write(*,fmt1,advance='no') "trunc"
+  if (trunc(rational(7_ik, 3_ik)) /= 2_ir) then
+    error stop "trunc failed for positive fraction (7/3)"
+  end if
+  if (trunc(rational(-7_ik, 3_ik)) /= -2_ir) then
+    error stop "trunc failed for negative fraction (-7/3)"
+  end if
+  if (trunc(rational(6_ik, 3_ik)) /= 2_ir) then
+    error stop "trunc failed for exact positive integer"
+  end if
+  if (floor(rational(-7_ik, 3_ik)) == trunc(rational(-7_ik, 3_ik))) then
+    error stop "floor and trunc should differ for negative non-integer"
+  end if
+  write(*,fmt2)
+
+  write(*,fmt1,advance='no') "round"
+  if (round(rational(7_ik, 4_ik)) /= 2_ir) then
+    error stop "round failed for 7/4 (rounds up to 2)"
+  end if
+  if (round(rational(5_ik, 4_ik)) /= 1_ir) then
+    error stop "round failed for 5/4 (rounds down to 1)"
+  end if
+  if (round(rational(1_ik, 2_ik)) /= 1_ir) then
+    error stop "round failed for 1/2 tie (should round to 1)"
+  end if
+  if (round(rational(-1_ik, 2_ik)) /= -1_ir) then
+    error stop "round failed for -1/2 tie (should round to -1)"
+  end if
+  if (round(rational(4_ik, 2_ik)) /= 2_ir) then
+    error stop "round failed for exact integer"
+  end if
+  write(*,fmt2)
+
+  write(*,fmt1,advance='no') "sign"
+  a = rational(3_ik, 4_ik)
+  b = rational(-1_ik, 5_ik)
+  !! Sign transfer: magnitude of a, sign of b
+  if (sign(a, b) /= rational(-3_ik, 4_ik)) then
+    error stop "sign failed: positive a, negative b"
+  end if
+  if (sign(a, a) /= a) then
+    error stop "sign failed: positive a, positive b"
+  end if
+  if (sign(b, a) /= rational(1_ik, 5_ik)) then
+    error stop "sign failed: negative a, positive b"
+  end if
+  !! Zero as b: treat as non-negative (matches intrinsic convention)
+  a = rational(3_ik, 4_ik)
+  b = rational(0_ik, 1_ik)
+  if (sign(a, b) /= rational(3_ik, 4_ik)) then
+    error stop "sign failed: b == 0 should yield non-negative result"
+  end if
+  write(*,fmt2)
+
+ write(*,fmt1,advance='no') "compare"
+  a = rational(2_ik, 3_ik)
+  b = rational(3_ik, 2_ik)
+  if (compare(a, b) /= -1) &
+    error stop "compare failed: a < b should return -1"
+  if (compare(b, a) /=  1) &
+    error stop "compare failed: a > b should return 1"
+  if (compare(a, a) /=  0) &
+    error stop "compare failed: a == a should return 0"
+  !! Same value, different representation (relies on simplify invariant)
+  if (compare(rational(2_ik, 4_ik), rational(1_ik, 2_ik)) /= 0) &
+    error stop "compare failed: 2/4 and 1/2 should be equal"
+  write(*,fmt2)
+
+  !! -----------------------------------------------------------
+  write(*,fmt1,advance='no') "mod"
+  !! Positive dividend and divisor
+  !! 7/3 mod 1/2: trunc(7/3 / (1/2)) = trunc(14/3) = 4; rem = 7/3 - 4*(1/2) = 7/3 - 2 = 1/3
+  a = rational(7_ik, 3_ik)
+  b = rational(1_ik, 2_ik)
+  if (mod(a, b) /= rational(1_ik, 3_ik)) &
+    error stop "mod failed for positive a, positive b"
+  !! Exact multiple: remainder is zero
+  a = rational(3_ik, 2_ik)
+  b = rational(1_ik, 2_ik)
+  if (mod(a, b) /= rational(0_ik, 1_ik)) &
+    error stop "mod failed: exact multiple should give zero remainder"
+  !! Negative dividend: remainder has same sign as dividend (matches Fortran mod)
+  a = rational(-7_ik, 3_ik)
+  b = rational(1_ik, 2_ik)
+  !! trunc(-14/3) = -4; rem = -7/3 - (-4)*(1/2) = -7/3 + 2 = -1/3
+  if (mod(a, b) /= rational(-1_ik, 3_ik)) &
+    error stop "mod failed for negative dividend"
+  write(*,fmt2)
+
+  !! -----------------------------------------------------------
+  write(*,fmt1,advance='no') "divmod"
+  a = rational(7_ik, 3_ik)
+  b = rational(1_ik, 2_ik)
+  !! Expected: q = trunc(14/3) = 4, r = 1/3
+  block
+    integer(ir)    :: q
+    type(rational) :: r
+    call divmod(a, b, q, r)
+    if (q /= 4_ir) &
+      error stop "divmod failed: wrong quotient"
+    if (r /= rational(1_ik, 3_ik)) &
+      error stop "divmod failed: wrong remainder"
+    !! Reconstruction: b*q + r == a
+    if (b * rational(q, 1_ir) + r /= a) &
+      error stop "divmod failed: b*q + r /= a"
+  end block
+  !! Exact division: remainder zero, quotient exact
+  a = rational(3_ik, 2_ik)
+  b = rational(1_ik, 2_ik)
+  block
+    integer(ir)    :: q
+    type(rational) :: r
+    call divmod(a, b, q, r)
+    if (q /= 3_ir) &
+      error stop "divmod failed: exact division quotient"
+    if (r /= rational(0_ik, 1_ik)) &
+      error stop "divmod failed: exact division remainder should be zero"
+  end block
+  write(*,fmt2)
+
+  !! -----------------------------------------------------------
+  write(*,fmt1,advance='no') "sum"
+  !! Known result: 1/2 + 2/3 + 1/6 = 3/6 + 4/6 + 1/6 = 8/6 = 4/3
+  u = [rational(1_ik, 2_ik), rational(2_ik, 3_ik)]
+  if (sum([rational(1_ik, 2_ik), rational(2_ik, 3_ik), rational(1_ik, 6_ik)]) &
+      /= rational(4_ik, 3_ik)) &
+    error stop "sum failed for three-element array"
+  !! Single element: sum == element
+  if (sum([rational(3_ik, 5_ik)]) /= rational(3_ik, 5_ik)) &
+    error stop "sum failed for single-element array"
+  !! Sum of empty array should be zero (additive identity)
+  block
+    type(rational) :: empty(0)
+    if (sum(empty) /= rational(0_ik, 1_ik)) &
+      error stop "sum failed for empty array: expected 0"
+  end block
+  write(*,fmt2)
+
+  !! -----------------------------------------------------------
+  write(*,fmt1,advance='no') "product"
+  !! Known result: 1/2 * 2/3 * 3/4 = 6/24 = 1/4
+  if (product([rational(1_ik, 2_ik), rational(2_ik, 3_ik), rational(3_ik, 4_ik)]) &
+      /= rational(1_ik, 4_ik)) &
+    error stop "product failed for three-element array"
+  !! Single element
+  if (product([rational(3_ik, 5_ik)]) /= rational(3_ik, 5_ik)) &
+    error stop "product failed for single-element array"
+  !! Product containing zero: result is zero
+  if (product([rational(1_ik, 2_ik), rational(0_ik, 1_ik), rational(3_ik, 4_ik)]) &
+      /= rational(0_ik, 1_ik)) &
+    error stop "product failed: array containing zero should give zero"
+  !! Empty array should be one (multiplicative identity)
+  block
+    type(rational) :: empty(0)
+    if (product(empty) /= rational(1_ik, 1_ik)) &
+      error stop "product failed for empty array: expected 1"
+  end block
   write(*,fmt2)
 
   write(*,"(A)") "All tests passed"

@@ -1,11 +1,6 @@
 module rationals
 !! rational numbers
 
-!! @todo
-!! mod, divmod, floor, ceil, trunc, round, sign
-!! is_integer, compare
-!! inverse
-
   use iso_fortran_env, only: ir => int64, ik => int32, rk => real64
 
   implicit none
@@ -14,18 +9,13 @@ module rationals
 
   public :: ir, ik, rk
 
-  integer(ik), parameter :: primes(*) = &
-    [  2,   3,   5,   7,  11,  13,  17,  19,  23,  29,  31,  37,  41,  43,  47,  53, &
-      59,  61,  67,  71,  73,  79,  83,  89,  97, 101, 103, 107, 109, 113, 127, 131, &
-     137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, &
-     227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, &
-     313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, &
-     419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, &
-     509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, &
-     617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, &
-     727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, &
-     829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, &
-     947, 953, 967, 971, 977, 983, 991, 997]
+  integer(ik), parameter :: rat_len = 41
+
+  integer(ik), parameter :: rk_digits = int(digits(1.0_rk)*log10(2.0_rk),ik)
+  !! Number of reliable decimal digits for kind rk
+
+  integer(ir), parameter :: real_scale = 10_ir**(rk_digits - 1)
+  !! Scale factor for real to rational conversion.
 
   integer(ik) :: order = 10
 
@@ -33,7 +23,6 @@ module rationals
     private
     integer(ir) :: num = 0   !! Numerator
     integer(ir) :: den = 1   !! Denominator
-    logical :: o             !! Dummy to offset default constructor interface
   contains
     procedure :: simplify
     procedure :: get_num, get_den
@@ -106,7 +95,7 @@ module rationals
   end interface operator(<=)
 
   interface rational
-    module procedure :: rat_real_const, rat_char_const, rat_int_const
+    module procedure :: rat_const_real, rat_const_char, rat_const_int
     module procedure :: rat_const_ik, rat_const_ir
   end interface rational
 
@@ -159,6 +148,46 @@ module rationals
     module procedure :: rat_rand
   end interface random_number
 
+  interface sum
+    module procedure :: rat_sum
+  end interface sum
+
+  interface product
+    module procedure :: rat_product
+  end interface product
+
+  interface floor
+    module procedure :: rat_floor
+  end interface floor
+
+  interface ceiling
+    module procedure :: rat_ceil
+  end interface ceiling
+
+  interface sign
+    module procedure :: rat_sign
+  end interface sign
+
+  interface trunc
+    module procedure :: rat_trunc
+  end interface trunc
+
+  interface round
+    module procedure :: rat_round
+  end interface round
+
+  interface compare
+    module procedure :: rat_compare
+  end interface compare
+
+  interface mod
+    module procedure :: rat_mod
+  end interface mod
+
+  interface divmod
+    module procedure :: rat_divmod
+  end interface divmod
+
   public :: rational
   public :: assignment(=)
   public :: operator(+), operator(-), operator(*), operator(/), operator(**)
@@ -167,6 +196,8 @@ module rationals
   public :: char, int, real
   public :: set_order, lcm, gcf
   public :: random_number, abs, min, max, dot_product, matmul, transpose
+  public :: sum, product, floor, ceiling, sign, trunc, round, compare, mod
+  public :: divmod
 
 contains
 
@@ -190,11 +221,8 @@ end function get_den
 
 pure elemental logical function is_integer(self) result(res)
 !! Check if rational is integer
-
   class(rational), intent(in) :: self
-
   res = self%den == 1
-
 end function is_integer
 
 !***********************************************************************
@@ -211,11 +239,11 @@ subroutine write_formatted(self, unit, iotype, v_list, iostat, iomsg)
   integer, intent(out)        :: iostat
   character(*), intent(inout) :: iomsg
 
-  if ((len_trim(iotype) >= 0) .and. (size(v_list) >= 0)) continue
+  associate(unused => v_list, unused2 => iotype); end associate
 
-  write(unit,"(I0)",advance='no', iostat=iostat, iomsg=iomsg) self%num
+  write(unit,"(I0)", advance='no', iostat=iostat, iomsg=iomsg) self%num
   write(unit,"('/')",advance='no', iostat=iostat, iomsg=iomsg)
-  write(unit,"(I0)", iostat=iostat, iomsg=iomsg) self%den
+  write(unit,"(I0)", advance='no', iostat=iostat, iomsg=iomsg) self%den
 
 end subroutine write_formatted
 
@@ -224,6 +252,7 @@ end subroutine write_formatted
 subroutine read_formatted(self, unit, iotype, v_list, iostat, iomsg)
 !! Read formatted rational
 
+  use iso_fortran_env, only: IOSTAT_EOR
   class(rational), intent(inout) :: self
   integer, intent(in)          :: unit
   character(*), intent(in)     :: iotype
@@ -231,13 +260,21 @@ subroutine read_formatted(self, unit, iotype, v_list, iostat, iomsg)
   integer, intent(out)         :: iostat
   character(*), intent(inout)  :: iomsg
 
-  character(50) :: line
+  character(rat_len) :: line
+  character(5) :: fmt
 
-  if ((len_trim(iotype) >= 0) .and. (size(v_list) >= 0)) continue
+  associate(unused => v_list, unused2 => iotype); end associate
 
-  read(unit,"(A50)", iostat=iostat, iomsg=iomsg) line
+  fmt = "(AXX)"
+  write(fmt(3:4),"(I2)") rat_len
+  read(unit,fmt,iostat=iostat,iomsg=iomsg) line
 
-  self = rat_char_const(line)
+  if (iostat == IOSTAT_EOR) then
+    iostat = 0
+    iomsg = ""
+  end if
+
+  self = rat_const_char(line)
 
 end subroutine read_formatted
 
@@ -275,33 +312,30 @@ end function rat_const_ir
 
 !***********************************************************************
 
-pure elemental type(rational) function rat_int_const(n) result(rat)
+pure elemental type(rational) function rat_const_int(n) result(rat)
 !! Construct rational from integer
-
   integer(ik), intent(in) :: n
-
   rat%num = n
   rat%den = 1
-
-end function rat_int_const
+end function rat_const_int
 
 !***********************************************************************
 
-pure elemental type(rational) function rat_real_const(r) result(rat)
+pure elemental type(rational) function rat_const_real(r) result(rat)
 !! Construct rational from real
 
   real(rk), intent(in) :: r
 
-  rat%num = nint(r*(10_ir**16), ir)
-  rat%den = 10_ir**16
+  rat%num = nint(r*real_scale, ir)
+  rat%den = real_scale
 
   call simplify(rat)
 
-end function rat_real_const
+end function rat_const_real
 
 !***********************************************************************
 
-pure elemental type(rational) function rat_char_const(str) result(r)
+impure elemental type(rational) function rat_const_char(str) result(r)
 !! Construct rational from character
 
   character(*), intent(in) :: str
@@ -315,10 +349,10 @@ pure elemental type(rational) function rat_char_const(str) result(r)
   if (slash == 0) then
     if (index(str, ".") /= 0) then
       read(str,*) f
-      r = rat_real_const(f)
+      r = rat_const_real(f)
     else
       read(str,*) i
-      r = rat_int_const(i)
+      r = rat_const_int(i)
     end if
   else
     read(str(1:slash-1), *) r%num
@@ -327,7 +361,7 @@ pure elemental type(rational) function rat_char_const(str) result(r)
 
   call simplify(r)
 
-end function rat_char_const
+end function rat_const_char
 
 !***********************************************************************
 !******************* C A S T I N G *************************************
@@ -363,22 +397,16 @@ end function rat_str
 
 pure elemental integer(ik) function rat_int(b) result(i)
 !! Convert rational to integer
-
   type(rational), intent(in) :: b
-
   i = nint((1.0_rk*b%num)/b%den, ik)
-
 end function rat_int
 
 !***********************************************************************
 
 pure elemental real(rk) function rat_real(b) result(r)
 !! Convert rational to real
-
   type(rational), intent(in) :: b
-
   r = real(b%num, rk)/b%den
-
 end function rat_real
 
 !***********************************************************************
@@ -387,26 +415,20 @@ end function rat_real
 
 pure elemental subroutine rat_set_rat(self,b)
 !! Set rational = rational
-
   type(rational), intent(out) :: self
   type(rational), intent(in) :: b
-
   self%num = b%num
   self%den = b%den
-
 end subroutine rat_set_rat
 
 !***********************************************************************
 
 pure elemental subroutine rat_set_int(self,b)
 !! Set rational = Int
-
   type(rational), intent(out) :: self
   integer(ik), intent(in) :: b
-
   self%num = b
   self%den = 1
-
 end subroutine rat_set_int
 
 !***********************************************************************
@@ -417,8 +439,8 @@ pure elemental subroutine rat_set_real(self,b)
   type(rational), intent(out) :: self
   real(rk), intent(in) :: b
 
-  self%num = nint((10_ir**16)*b, ir)
-  self%den = 10_ir**16
+  self%num = nint(real_scale*b, ir)
+  self%den = real_scale
 
   call self%simplify()
 
@@ -617,9 +639,6 @@ pure elemental type(rational) function rat_div_rat(a,b) result(c)
   c%num = (a%num/gcf1)*(b%den/gcf2)
   c%den = (a%den/gcf2)*(b%num/gcf1)
 
-  ! c%num = (a%num)*(b%den)
-  ! c%den = (a%den)*(b%num)
-
   call c%simplify()
 
 end function rat_div_rat
@@ -666,7 +685,7 @@ end function int_div_rat
 !******************* E X P O N E N T I A T I O N ***********************
 !***********************************************************************
 
-pure type(rational) function rat_power_int(a,b) result(c)
+pure elemental type(rational) function rat_power_int(a,b) result(c)
 !! Raise rational to integer power
 
   type(rational), intent(in) :: a
@@ -676,10 +695,17 @@ pure type(rational) function rat_power_int(a,b) result(c)
 
   c%num = 1
   c%den = 1
-  do i = 1,b
+
+  if (b == 0) return
+
+  do i = 1,abs(b)
     c%num = c%num*a%num
     c%den = c%den*a%den
   end do ! i
+
+  if (b < 0) then
+    c = inverse(c)
+  end if
 
 end function rat_power_int
 
@@ -689,35 +715,26 @@ end function rat_power_int
 
 pure elemental logical function rat_eq_rat(a,b) result(c)
 !! Check rational == rational
-
   type(rational), intent(in) :: a,b
-
   c = (a%num == b%num).and.(a%den == b%den)
-
 end function rat_eq_rat
 
 !***********************************************************************
 
 pure elemental logical function rat_eq_int(a,b) result(c)
 !! Check rational == Int
-
   type(rational), intent(in) :: a
   integer(ik), intent(in) :: b
-
   c = (a%den == 1) .and. (a%num == b)
-
 end function rat_eq_int
 
 !***********************************************************************
 
 pure elemental logical function int_eq_rat(a,b) result(c)
 !! Check Int == rational
-
   integer(ik), intent(in) :: a
   type(rational), intent(in) :: b
-
-  c = (b%num == a)
-
+  c = (b%num == a) .and. (b%den == 1)
 end function int_eq_rat
 
 !***********************************************************************
@@ -726,35 +743,26 @@ end function int_eq_rat
 
 pure elemental logical function rat_ne_rat(a,b) result(c)
 !! Check rational != rational
-
   type(rational), intent(in) :: a,b
-
   c = (a%num /= b%num) .or. (a%den /= b%den)
-
 end function rat_ne_rat
 
 !***********************************************************************
 
 pure elemental logical function rat_ne_int(a,b) result(c)
 !! Check rational != Int
-
   type(rational), intent(in) :: a
   integer(ik), intent(in) :: b
-
   c = (a%num /= b) .or. (a%den /= 1)
-
 end function rat_ne_int
 
 !***********************************************************************
 
 pure elemental logical function int_ne_rat(a,b) result(c)
-!! Check Int != rational
-
+!! Check Int /= rational
   integer(ik), intent(in) :: a
   type(rational), intent(in) :: b
-
   c = (b%num /= a) .or. (b%den /= 1)
-
 end function int_ne_rat
 
 !***********************************************************************
@@ -763,35 +771,26 @@ end function int_ne_rat
 
 pure elemental logical function rat_gt_rat(a,b) result(c)
 !! Check rational > rational
-
   type(rational), intent(in) :: a,b
-
   c = (a%num*b%den) > (b%num*a%den)
-
 end function rat_gt_rat
 
 !***********************************************************************
 
 pure elemental logical function rat_gt_int(a,b) result(c)
 !! Check rational > Int
-
   type(rational), intent(in) :: a
   integer(ik), intent(in) :: b
-
   c = a%num > (a%den*b)
-
 end function rat_gt_int
 
 !***********************************************************************
 
 pure elemental logical function int_gt_rat(a,b) result(c)
 !! Check Int > rational
-
   integer(ik), intent(in) :: a
   type(rational), intent(in) :: b
-
   c = a*b%den > b%num
-
 end function int_gt_rat
 
 !***********************************************************************
@@ -800,35 +799,26 @@ end function int_gt_rat
 
 pure elemental logical function rat_lt_rat(a,b) result(c)
 !! Check rational < rational
-
   type(rational), intent(in) :: a,b
-
   c = (a%num*b%den) < (b%num*a%den)
-
 end function rat_lt_rat
 
 !***********************************************************************
 
 pure elemental logical function rat_lt_int(a,b) result(c)
 !! Check rational < Int
-
   type(rational), intent(in) :: a
   integer(ik), intent(in) :: b
-
   c = a%num < (a%den*b)
-
 end function rat_lt_int
 
 !***********************************************************************
 
 pure elemental logical function int_lt_rat(a,b) result(c)
 !! Check Int < rational
-
   integer(ik), intent(in) :: a
   type(rational), intent(in) :: b
-
   c = a*b%den < b%num
-
 end function int_lt_rat
 
 !***********************************************************************
@@ -837,35 +827,26 @@ end function int_lt_rat
 
 pure elemental logical function rat_ge_rat(a,b) result(c)
 !! Check rational >= rational
-
   type(rational), intent(in) :: a,b
-
   c = (a%num*b%den) >= (b%num*a%den)
-
 end function rat_ge_rat
 
 !***********************************************************************
 
 pure elemental logical function rat_ge_int(a,b) result(c)
 !! Check rational >= Int
-
   type(rational), intent(in) :: a
   integer(ik), intent(in) :: b
-
   c = a%num >= (a%den*b)
-
 end function rat_ge_int
 
 !***********************************************************************
 
 pure elemental logical function int_ge_rat(a,b) result(c)
 !! Check Int >= rational
-
   integer(ik), intent(in) :: a
   type(rational), intent(in) :: b
-
   c = a*b%den >= b%num
-
 end function int_ge_rat
 
 !***********************************************************************
@@ -874,35 +855,26 @@ end function int_ge_rat
 
 pure elemental logical function rat_le_rat(a,b) result(c)
 !! Check rational <= rational
-
   type(rational), intent(in) :: a,b
-
   c = (a%num*b%den) <= (b%num*a%den)
-
 end function rat_le_rat
 
 !***********************************************************************
 
 pure elemental logical function rat_le_int(a,b) result(c)
 !! Check rational <= Int
-
   type(rational), intent(in) :: a
   integer(ik), intent(in) :: b
-
   c = a%num <= (a%den*b)
-
 end function rat_le_int
 
 !***********************************************************************
 
 pure elemental logical function int_le_rat(a,b) result(c)
 !! Check Int <= rational
-
   integer(ik), intent(in) :: a
   type(rational), intent(in) :: b
-
   c = a*b%den <= b%num
-
 end function int_le_rat
 
 !***********************************************************************
@@ -945,23 +917,17 @@ end subroutine simplify
 
 pure elemental type(rational) function inverse(self) result(b)
 !! Reciprocal of rational
-
   class(rational), intent(in) :: self
-
   b%num = self%den
   b%den = self%num
-
 end function inverse
 
 !***********************************************************************
 
 subroutine set_order(ord)
 !! Set order for random number generation
-
   integer(ik), intent(in) :: ord
-
   order = ord
-
 end subroutine set_order
 
 !***********************************************************************
@@ -970,12 +936,9 @@ end subroutine set_order
 
 pure elemental type(rational) function rat_abs(b) result(a)
 !! Absolute value
-
   type(rational), intent(in) :: b
-
   a%num = abs(b%num)
   a%den = b%den
-
 end function rat_abs
 
 !***********************************************************************
@@ -1015,7 +978,7 @@ pure type(rational) function rat_dot(a,b) result(c)
 
   type(rational), intent(in) :: a(:), b(:)
 
-  integer(ik) :: i
+  integer(ir) :: i
 
   if (size(a) /= size(b)) then
     error stop "rational, dot: Incompatible vector sizes"
@@ -1095,25 +1058,17 @@ pure elemental integer(ir) function lcm_ir(a,b) result(c)
 
   integer(ir), intent(in) :: a, b
 
-  integer(ir) :: i
-  integer(ir) :: prime
-  integer(ir) :: p
+  integer(ir) :: g
 
-  if ((a == 0).or.(b == 0)) then
+  if ((a == 0) .or. (b == 0)) then
     c = 0
     return
   end if
 
-  c = 1
-  do i = 1,size(primes)
-    prime = primes(i)
-    if ((prime.gt.a).and.(prime.gt.b)) return
-    p = prime
-    do while ((modulo(a,p) == 0).or.(modulo(b,p) == 0))
-      p = p*prime
-    end do
-    if (p /= prime) c = c*p/prime
-  end do ! i
+  g = gcf_ir(a, b)
+
+  c = (abs(a) / g) * abs(b)
+  !! Divide before multiplying to avoid intermediate overflow
 
 end function lcm_ir
 
@@ -1136,26 +1091,26 @@ pure elemental integer(ir) function gcf_ir(a,b) result(c)
 !! Calculate the greatest common factor of two integers
 
   integer(ir), intent(in) :: a, b
+  integer(ir) :: x, y, t
 
-  integer(ir) :: i
-  integer(ir) :: prime
-  integer(ir) :: p
+  x = abs(a)
+  y = abs(b)
 
-  if ((a == 0) .or. (b == 0)) then
-    c = 0
+  if (x == 0) then
+    c = y
+    return
+  end if
+  if (y == 0) then
+    c = x
     return
   end if
 
-  c = 1
-  do i = 1,size(primes)
-    prime = primes(i)
-    if ((prime > abs(a)).and.(prime > abs(b))) return
-    p = prime
-    do while ((modulo(abs(a),p) == 0) .and. (modulo(abs(b),p) == 0))
-      p = p*prime
-    end do
-    if (p /= prime) c = c*p/prime
-  end do ! i
+  do while (y /= 0)
+    t = mod(x, y)
+    x = y
+    y = t
+  end do
+  c = x
 
 end function gcf_ir
 
@@ -1207,6 +1162,133 @@ impure elemental subroutine rat_rand(a)
   call a%simplify()
 
 end subroutine rat_rand
+
+!***********************************************************************
+
+pure elemental type(rational) function rat_sign(a, b) result(c)
+!! Sign transfer: magnitude of a with sign of b (mirrors intrinsic sign())
+
+  type(rational), intent(in) :: a, b
+
+  c%den = a%den
+  if (b%num >= 0) then
+    c%num =  abs(a%num)
+  else
+    c%num = -abs(a%num)
+  end if
+
+end function rat_sign
+
+!***********************************************************************
+
+pure elemental integer(ir) function rat_floor(b) result(n)
+!! Greatest integer <= b
+  type(rational), intent(in) :: b
+  n = b%num / b%den
+  if ((b%num < 0) .and. (mod(b%num, b%den) /= 0)) n = n - 1_ir
+end function rat_floor
+
+!***********************************************************************
+
+pure elemental integer(ir) function rat_ceil(b) result(n)
+!! Smallest integer >= b
+  type(rational), intent(in) :: b
+  n = b%num / b%den
+  if ((b%num > 0) .and. (mod(b%num, b%den) /= 0)) then
+    n = n + 1_ir
+  end if
+end function rat_ceil
+
+!***********************************************************************
+
+pure elemental integer(ir) function rat_trunc(b) result(n)
+!! Truncation toward zero (same as int() for positive, ceiling for negative)
+  type(rational), intent(in) :: b
+  n = b%num / b%den
+  !! Fortran integer division truncates toward zero
+end function rat_trunc
+
+!***********************************************************************
+
+pure elemental integer(ir) function rat_round(b) result(n)
+!! Round to nearest integer; ties round away from zero
+  type(rational), intent(in) :: b
+  !! Add/subtract 1/2 then truncate
+  integer(ir) :: twice
+  twice = 2_ir * b%num
+  n = rat_trunc(rational(twice + sign(b%den, b%num), 2_ir * b%den))
+end function rat_round
+
+!***********************************************************************
+
+pure elemental integer function rat_compare(a, b) result(c)
+!! Three-way comparison: -1 if a<b, 0 if a==b, 1 if a>b
+
+  type(rational), intent(in) :: a, b
+
+  integer(ir) :: lhs, rhs
+
+  lhs = a%num * b%den
+  rhs = b%num * a%den
+
+  if (lhs < rhs) then
+    c = -1
+  else if (lhs > rhs) then
+    c =  1
+  else
+    c = 0
+  end if
+
+end function rat_compare
+
+!***********************************************************************
+
+pure elemental type(rational) function rat_mod(a, b) result(c)
+!! Rational modulo: a - trunc(a/b)*b
+  type(rational), intent(in) :: a, b
+  type(rational) :: q
+  q = a/b
+  c = a - rational(rat_trunc(q), 1_ir)*b
+end function rat_mod
+
+!***********************************************************************
+
+pure elemental subroutine rat_divmod(a, b, q, r)
+!! Compute integer quotient and rational remainder of a/b simultaneously
+  type(rational), intent(in)  :: a, b
+  integer(ir),    intent(out) :: q     !! truncated quotient
+  type(rational), intent(out) :: r     !! remainder: a - q*b
+  q = rat_trunc(a / b)
+  r = a - rational(q, 1_ir) * b
+end subroutine rat_divmod
+
+!***********************************************************************
+
+pure type(rational) function rat_sum(a) result(s)
+!! Sum of a rational array
+  type(rational), intent(in) :: a(:)
+  integer :: i
+
+  s = rational(0_ik, 1_ik)
+  do i = 1, size(a)
+    s = s + a(i)
+  end do
+
+end function rat_sum
+
+!***********************************************************************
+
+pure type(rational) function rat_product(a) result(p)
+!! Product of a rational array
+  type(rational), intent(in) :: a(:)
+  integer :: i
+
+  p = rational(1_ik, 1_ik)
+  do i = 1,size(a)
+    p = p*a(i)
+  end do
+
+end function rat_product
 
 !***********************************************************************
 !******************* E N D *********************************************
