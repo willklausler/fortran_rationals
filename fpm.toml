@@ -16,14 +16,15 @@ debug.flags = "-g -Wall"
 debug.gfortran.flags = "-fbacktrace -fcheck=all -Wextra -Wpedantic -Wuninitialized -Wmaybe-uninitialized -Wimplicit-interface -Wimplicit-procedure -Warray-temporaries -Wrealloc-lhs -finit-real=snan -finit-integer=-2147483648 -finit-logical=true -fstack-protector-all"
 debug.gfortran.linux.flags = "-fsanitize=address,undefined"
 
-debug.ifx.flags = "-check all -warn all -traceback -fpe0 -init=snan,arrays -ftrapuv -fp-stack-check -diag-error-limit 10"
-debug.ifx.linux.flags = "-fsanitize=address,undefined"
+debug.ifx.linux.flags = "-check all -warn all -traceback -fpe0 -init=snan,arrays -ftrapuv -fp-stack-check -diag-error-limit 10 -fsanitize=address,undefined"
+debug.ifx.windows.flags = "/check:all /warn:all /traceback /fpe:0 /Qinit:snan,arrays /Qtrapuv"
 
 debug.nvfortran.flags = "-Minform=inform -Mbounds -Mchkptr -Mchkstk -Mstandard -Ktrap=fp -traceback"
 
 release.flags = "-O3"
 release.gfortran.flags = "-fbacktrace -march=native -funroll-loops -flto"
-release.ifx.flags = "-xHost -unroll"
+release.ifx.linux.flags = "-xHost -unroll"
+release.ifx.windows.flags = "/QxHost /Qunroll"
 
 release.nvfortran.flags = "-Mrecursive -fast"
 

@@ -1,0 +1,54 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: ${{ matrix.os }} ${{ matrix.compiler }}
+    runs-on: ${{ matrix.os }}
+    # lfortran cannot compile this code yet; keep it visible without failing CI
+    continue-on-error: ${{ matrix.compiler == 'lfortran' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: ubuntu-latest,  compiler: gcc,        version: 14}
+          - {os: ubuntu-latest,  compiler: intel,      version: '2026.1'}
+          - {os: ubuntu-latest,  compiler: nvidia-hpc, version: '26.1'}
+          - {os: ubuntu-latest,  compiler: flang,      version: 22}
+          - {os: ubuntu-latest,  compiler: lfortran,   version: '0.58.0'}
+          - {os: macos-latest,   compiler: gcc,        version: 14}
+          - {os: macos-latest,   compiler: lfortran,   version: '0.58.0'}
+          - {os: windows-latest, compiler: gcc,        version: 14}
+          - {os: windows-latest, compiler: intel,      version: '2026.1'}
+          - {os: windows-latest, compiler: lfortran,   version: '0.58.0'}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: fortran-lang/setup-fortran@v1
+        if: matrix.compiler != 'flang'
+        with:
+          compiler: ${{ matrix.compiler }}
+          version: ${{ matrix.version }}
+
+      # setup-fortran does not provide LLVM flang
+      - name: Install LLVM flang
+        if: matrix.compiler == 'flang'
+        run: |
+          wget -q https://apt.llvm.org/llvm.sh
+          sudo bash llvm.sh ${{ matrix.version }}
+          sudo apt-get install -y flang-${{ matrix.version }}
+          echo "FC=flang-${{ matrix.version }}" >> "$GITHUB_ENV"
+
+      - uses: fortran-lang/setup-fpm@v10
+        with:
+          fpm-version: v0.13.0
+
+      - name: fpm test (debug)
+        run: fpm test --compiler "$FC" --profile debug
+
+      - name: fpm test (release)
+        run: fpm test --compiler "$FC" --profile release
