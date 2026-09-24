@@ -24,7 +24,8 @@ jobs:
           - {os: windows-latest, compiler: lfortran,   version: '0.58.0'}
     defaults:
       run:
-        shell: bash
+        # Git Bash's coreutils `link` shadows MSVC link.exe, which ifx needs
+        shell: ${{ matrix.os == 'windows-latest' && 'pwsh' || 'bash' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -53,7 +54,7 @@ jobs:
         run: brew install gcc@12
 
       - name: fpm test (debug)
-        run: fpm test --compiler "$FC" --profile debug
+        run: fpm test --compiler ${{ env.FC }} --profile debug
 
       - name: fpm test (release)
-        run: fpm test --compiler "$FC" --profile release
+        run: fpm test --compiler ${{ env.FC }} --profile release
