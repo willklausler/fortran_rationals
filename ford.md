@@ -4,8 +4,8 @@ src_dir: src
          example
          test
 output_dir: docs/fpm-ford
-project: easy
-summary: easy project
+project: Fortran Rationals
+summary: Rational number derived type in Modern Fortran
 project_github: https://github.com/willklausler/fortran_rationals
 project_download:
 author: Will Klausler
