@@ -1,5 +1,9 @@
-program example
-!! Rational approximations of pi and the square root of two
+program rationals_example
+!! Use [[rationals]] for rational approximations:
+!!
+!! 1. convert a real to the simplest fraction that equals it, and
+!!    truncate its decimal expansion,
+!! 2. iterate a continued fraction that converges to the square root of two.
 
   use rationals
   use iso_fortran_env, only: rk => real64
@@ -56,4 +60,4 @@ subroutine ex2()
 
 end subroutine ex2
 
-end program example
+end program rationals_example

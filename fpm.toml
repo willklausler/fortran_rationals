@@ -1,32 +1,34 @@
-# TOML file for fpm as described at https://fpm.fortran-lang.org/en/spec/manifest.html
 name = "fortran_rationals"
 version = "0.1.0"
 license = "MIT"
 author = "Will Klausler"
-maintainer = "wklausler@protonmail.com"
-copyright = "Copyright 2026, Will Klausler"
-description = ""
-categories = [""]
-keywords = ["fortran", "fortran-package-manager"]
+copyright = "Copyright 2025-2026, Will Klausler"
+description = "Rational number derived type with checked exact arithmetic"
+categories = ["numerical methods"]
+keywords = ["rational", "fraction", "exact-arithmetic", "number-theory"]
 homepage = "https://github.com/willklausler/fortran_rationals"
 
 [features]
-debug.gfortran.flags = "-g -Wall -fbacktrace -fcheck=all -Wextra -Wpedantic -Wuninitialized -Wmaybe-uninitialized -Wimplicit-interface -Wimplicit-procedure -Warray-temporaries -Wrealloc-lhs -finit-real=snan -finit-integer=-2147483648 -finit-logical=true -fstack-protector-all"
+debug.flags = "-g -Wall"
+
+debug.gfortran.flags = "-fbacktrace -fcheck=all -Wextra -Wpedantic -Wuninitialized -Wmaybe-uninitialized -Wimplicit-interface -Wimplicit-procedure -Warray-temporaries -Wrealloc-lhs -finit-real=snan -finit-integer=-2147483648 -finit-logical=true -fstack-protector-all"
 debug.gfortran.linux.flags = "-fsanitize=address,undefined"
 
-debug.ifx.linux.flags = "-g -Wall -check all -warn all -traceback -fpe0 -init=snan,arrays -ftrapuv -fp-stack-check -diag-error-limit 10 -fsanitize=address,undefined"
-debug.ifx.windows.flags = "/Zi /check:all /warn:all /traceback /fpe:0 /Qinit:snan,arrays /Qtrapuv"
+debug.ifx.flags = "-check all -warn all -traceback -fpe0 -init=snan,arrays -ftrapuv -fp-stack-check -diag-error-limit 10"
+debug.ifx.linux.flags = "-fsanitize=address,undefined"
 
-debug.nvfortran.flags = "-g -Minform=inform -Mbounds -Mchkptr -Mchkstk -Mstandard -Ktrap=fp -traceback"
+debug.nvfortran.flags = "-Minform=inform -Mbounds -Mchkptr -Mchkstk -Mstandard -Ktrap=fp -traceback"
 
 release.flags = "-O3"
 release.gfortran.flags = "-fbacktrace -march=native -funroll-loops"
-release.gfortran.linux.flags = "-flto"
-release.ifx.linux.flags = "-xHost -unroll"
-release.ifx.windows.flags = "/QxHost /Qunroll"
+release.gfortran.linux.flags = "-flto"   # MinGW ar drops LTO objects from the archive
+release.ifx.flags = "-xHost -unroll"
 
 release.nvfortran.flags = "-Mrecursive -fast"
 
 [profiles]
 debug = ["debug"]
 release = ["release"]
+
+[install]
+library = true

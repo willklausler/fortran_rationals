@@ -1,6 +1,4 @@
 build/
-*.mod
-*.o
-
+docs/
 CLAUDE.md
 .claude/settings.local.json

@@ -4,62 +4,72 @@ on: [push, pull_request]
 
 jobs:
   test:
-    name: ${{ matrix.os }} ${{ matrix.compiler }}
+    name: ${{ matrix.os }} / ${{ matrix.compiler }} ${{ matrix.version }}
     runs-on: ${{ matrix.os }}
-    # lfortran cannot compile this code yet; keep it visible without failing CI
-    continue-on-error: ${{ matrix.compiler == 'lfortran' }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - {os: ubuntu-latest,  compiler: gcc,        version: 14}
-          - {os: ubuntu-latest,  compiler: intel,      version: '2026.1'}
-          - {os: ubuntu-latest,  compiler: nvidia-hpc, version: '26.1'}
-          - {os: ubuntu-latest,  compiler: flang,      version: 22}
-          - {os: ubuntu-latest,  compiler: lfortran,   version: '0.58.0'}
-          - {os: macos-latest,   compiler: gcc,        version: 14}
-          - {os: macos-latest,   compiler: lfortran,   version: '0.58.0'}
-          - {os: windows-latest, compiler: gcc,        version: 14}
-          - {os: windows-latest, compiler: intel,      version: '2026.1'}
-          - {os: windows-latest, compiler: lfortran,   version: '0.58.0'}
-    defaults:
-      run:
-        shell: bash
+          - { os: ubuntu-24.04,  compiler: gcc,        version: 13 }
+          - { os: ubuntu-24.04,  compiler: gcc,        version: 14 }
+          - { os: ubuntu-24.04,  compiler: gcc,        version: 15 }
+          - { os: ubuntu-24.04,  compiler: intel,      version: '2025.2' }
+          - { os: ubuntu-24.04,  compiler: nvidia-hpc, version: '25.1' }
+          - { os: macos-15,      compiler: gcc,        version: 14 }
+          - { os: windows-2025,  compiler: gcc,        version: 14 }
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: fortran-lang/setup-fortran@v1
-        if: matrix.compiler != 'flang'
+      - uses: actions/checkout@v7
+      - uses: fortran-lang/setup-fortran@v1   # sets FPM_FC
         with:
           compiler: ${{ matrix.compiler }}
           version: ${{ matrix.version }}
-
-      # setup-fortran does not provide LLVM flang
-      - name: Install LLVM flang
-        if: matrix.compiler == 'flang'
-        run: |
-          wget -q https://apt.llvm.org/llvm.sh
-          sudo bash llvm.sh ${{ matrix.version }}
-          sudo apt-get install -y flang-${{ matrix.version }}
-          echo "FC=flang-${{ matrix.version }}" >> "$GITHUB_ENV"
-
+      - run: brew install gcc@12   # runtime of the prebuilt macOS fpm binary
+        if: runner.os == 'macOS'
       - uses: fortran-lang/setup-fpm@v10
         with:
-          fpm-version: v0.13.0
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          fpm-version: latest
+      - run: fpm test --profile debug
+      - run: fpm test --profile release
+      - run: fpm run --example --all --profile release
 
-      # setup-fortran hides GNU `link` (it shadows MSVC link.exe, which ifx
-      # needs) by moving it to RUNNER_TEMP; setup-fpm then puts RUNNER_TEMP on PATH
-      - name: Remove GNU link (Windows)
-        if: runner.os == 'Windows'
-        run: rm -f "$RUNNER_TEMP/link" "$RUNNER_TEMP/link.exe"
+  make:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: fortran-lang/setup-fortran@v1   # sets FC
+        with:
+          compiler: gcc
+          version: 14
+      - run: make test
+      - run: make example
+      - run: make install DESTDIR=$PWD/stage PREFIX=/usr
+      - run: gfortran example/rationals_example.f90 -Istage/usr/include -Lstage/usr/lib -lfortran_rationals -o installed_example && ./installed_example
 
-      # the prebuilt macOS fpm binary links against Homebrew's gcc@12 runtime
-      - name: Install fpm runtime (macOS)
-        if: runner.os == 'macOS'
-        run: brew install gcc@12
+  docs:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.x'
+      - run: pip install ford
+      - run: ford ford.md
+      - uses: actions/upload-pages-artifact@v4
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        with:
+          path: docs
 
-      - name: fpm test (debug)
-        run: fpm test --compiler "$FC" --profile debug
-
-      - name: fpm test (release)
-        run: fpm test --compiler "$FC" --profile release
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: docs
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

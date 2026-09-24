@@ -1,14 +1,29 @@
 module rationals
 !! Rational numbers as a derived type with exact arithmetic.
 !!
-!! A `rational` holds a 64-bit numerator and denominator, always in lowest
-!! terms with a positive denominator. Arithmetic is checked: an operation
-!! whose exact result does not fit in 64 bits stops with an error instead of
-!! returning a wrong value. Division by zero also stops with an error.
+!! A [[rational]] holds a 64-bit numerator and denominator, always in
+!! lowest terms with a positive denominator, so equal values have equal
+!! representations.
 !!
-!! Addition and multiplication reduce by common factors before multiplying,
-!! following D. E. Knuth, *The Art of Computer Programming*, Vol. 2:
-!! Seminumerical Algorithms, 3rd ed., Addison-Wesley, 1997, Section 4.5.1.
+!! ## Checked arithmetic
+!!
+!! An operation whose exact result does not fit in 64 bits stops with
+!! `error stop` and a message instead of returning a wrong value. Division
+!! by zero and unparsable text also stop. Addition and multiplication
+!! cancel common factors before multiplying [1], and comparisons use
+!! continued fractions, so intermediate results stay as small as possible.
+!!
+!! ## Conversions
+!!
+!! A real converts to the simplest fraction that converts back to exactly
+!! the same real, found from its continued-fraction convergents [1].
+!! Text may be `"n"`, `"n/d"` or a decimal real such as `"0.75"`.
+!!
+!! ## References
+!!
+!! 1. Knuth, D. E. (1997). *The Art of Computer Programming*, Vol. 2:
+!!    *Seminumerical Algorithms*, 3rd ed., §4.5.1 and §4.5.3.
+!!    Addison-Wesley.
 
   use iso_fortran_env, only: ir => int64, ik => int32, rk => real64
 
@@ -270,7 +285,7 @@ subroutine write_formatted(self, unit, iotype, v_list, iostat, iomsg)
 
   associate(unused => v_list, unused2 => iotype); end associate
 
-  write(unit,"(A)", iostat=iostat, iomsg=iomsg) trim(rat_str(self))
+  write(unit,"(A)", advance="no", iostat=iostat, iomsg=iomsg) trim(rat_str(self))
 
 end subroutine write_formatted
 
