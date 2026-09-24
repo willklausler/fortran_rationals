@@ -91,7 +91,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="100.0% of total for modules and submodules.">722 statements</a>
+                 title="100.0% of total for modules and submodules.">787 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -218,12 +218,20 @@
     </div>
 
     <div class="col-md-9" id='text'>
-      <p>rational numbers</p>
+      <p>Rational numbers as a derived type with exact arithmetic.</p>
+<p>A <code>rational</code> holds a 64-bit numerator and denominator, always in lowest
+ terms with a positive denominator. Arithmetic is checked: an operation
+ whose exact result does not fit in 64 bits stops with an error instead of
+ returning a wrong value. Division by zero also stops with an error.</p>
+<p>Addition and multiplication reduce by common factors before multiplying,
+ following D. E. Knuth, <em>The Art of Computer Programming</em>, Vol. 2:
+ Seminumerical Algorithms, 3rd ed., Addison-Wesley, 1997, Section 4.5.1.</p>
 <hr>
 <hr>
 <hr>
 <hr>
 <p><strong><em>*</em></strong><strong><em>*</em></strong><strong><em>* I / O </em></strong><strong><em>*</em></strong><strong><em>*</em></strong><strong><em>*</em></strong><strong><em>*</em></strong><strong><em>*</em></strong><strong><em>*</em></strong></p>
+<hr>
 <hr>
 <hr>
 <hr>
@@ -241,6 +249,10 @@
 <hr>
 <p><strong><em>*</em></strong><strong><em>*</em></strong><strong><em>* A S S I G N M E N T </em></strong><strong><em>*</em></strong><strong><em>*</em></strong><strong><em>*</em></strong><strong><em>*</em></strong></p>
 <hr>
+<hr>
+<hr>
+<hr>
+<p><strong><em>*</em></strong><strong><em>*</em></strong><strong><em>* C H E C K E D  I N T E G E R S </em></strong><strong><em>*</em></strong><strong><em>*</em></strong>***</p>
 <hr>
 <hr>
 <hr>
@@ -360,10 +372,13 @@
       <h3>public        interface <a href='../interface/abs.html'>abs</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Absolute value</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_abs(b) result(a)  
+    private elemental function rat_abs(b) result(a)  
 
     </h3>
   <p>Absolute value</p>
@@ -381,7 +396,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~39"></span>
+              <span class="anchor" id="variable-b~41"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -413,10 +428,13 @@
       <h3>public        interface <a href='../interface/assignment(=).html'>assignment(=)</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Assign a rational, integer, or real to a rational</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental subroutine rat_set_rat(self, b)  
+    private elemental subroutine rat_set_rat(self, b)  
 
     </h3>
   <p>Set rational = rational</p>
@@ -469,7 +487,7 @@
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental subroutine rat_set_int(self, b)  
+    private elemental subroutine rat_set_int(self, b)  
 
     </h3>
   <p>Set rational = Int</p>
@@ -522,7 +540,7 @@
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental subroutine rat_set_real(self, b)  
+    private elemental subroutine rat_set_real(self, b)  
 
     </h3>
   <p>Set rational = Real</p>
@@ -582,10 +600,13 @@
       <h3>public        interface <a href='../interface/ceiling.html'>ceiling</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Smallest integer &gt;= argument</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_ceil(b) result(n)  
+    private elemental function rat_ceil(b) result(n)  
 
     </h3>
   <p>Smallest integer &gt;= b</p>
@@ -603,7 +624,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~53"></span>
+              <span class="anchor" id="variable-b~55"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -635,10 +656,13 @@
       <h3>public        interface <a href='../interface/char.html'>char</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Text form: &ldquo;n/d&rdquo;, or &ldquo;n&rdquo; for an integer</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_str(self) result(str)  
+    private elemental function rat_str(self) result(str)  
 
     </h3>
   <p>Convert rational to character</p>
@@ -674,7 +698,7 @@
 
     <h4>
     Return Value
-    <small>character(len=41)</small>
+    <small>character(len=rat_len)</small>
     </h4>
     
 
@@ -688,81 +712,17 @@
       <h3>public        interface <a href='../interface/compare.html'>compare</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Three-way comparison: -1, 0 or 1</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_compare(a, b) result(c)  
+    private elemental function rat_compare(a, b) result(c)  
 
     </h3>
   <p>Three-way comparison: -1 if a<b, 0 if a==b, 1 if a>b</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~47"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~56"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>integer</small>
-    </h4>
-    
-
-          </li>
-    </ul>
-  </div>
-
-              <div class="card">
-    <div class="card-header bg-light codesum">
-      <span class="anchor" id="interface-divmod"></span>
-      <h3>public        interface <a href='../interface/divmod.html'>divmod</a> 
-      </h3>
-    </div>
-    <ul class="list-group">
-          <li class="list-group-item">
-                <h3>
-    private pure elemental subroutine rat_divmod(a, b, q, r)  
-
-    </h3>
-  <p>Compute integer quotient and rational remainder of a/b simultaneously</p>
+<p>Compares continued-fraction expansions, so it never overflows.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -805,6 +765,77 @@
                 
             </td>
         </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>integer</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+              <div class="card">
+    <div class="card-header bg-light codesum">
+      <span class="anchor" id="interface-divmod"></span>
+      <h3>public        interface <a href='../interface/divmod.html'>divmod</a> 
+      </h3>
+    </div>
+      <div class="card-body">
+        <p>Truncated quotient and remainder together</p>
+      </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    private elemental subroutine rat_divmod(a, b, q, r)  
+
+    </h3>
+  <p>Compute integer quotient and rational remainder of a/b simultaneously</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~51"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~60"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-q~2"></span>
@@ -822,7 +853,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-r~5"></span>
+              <span class="anchor" id="variable-r~7"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(out)</td>
@@ -849,6 +880,9 @@
       <h3>public        interface <a href='../interface/dot_product.html'>dot_product</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Dot product of rational vectors</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
@@ -870,7 +904,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~36"></span>
+              <span class="anchor" id="variable-a~38"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -885,7 +919,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~42"></span>
+              <span class="anchor" id="variable-b~44"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -917,10 +951,13 @@
       <h3>public        interface <a href='../interface/floor.html'>floor</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Greatest integer &lt;= argument</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_floor(b) result(n)  
+    private elemental function rat_floor(b) result(n)  
 
     </h3>
   <p>Greatest integer &lt;= b</p>
@@ -938,7 +975,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~52"></span>
+              <span class="anchor" id="variable-b~54"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -970,13 +1007,260 @@
       <h3>public        interface <a href='../interface/gcf.html'>gcf</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Greatest common factor</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function gcf_ir(a, b) result(c)  
+    private elemental function gcf_ir(a, b) result(c)  
 
     </h3>
   <p>Calculate the greatest common factor of two integers</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~44"></span>
+              integer(kind=ir),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~50"></span>
+              integer(kind=ir),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>integer(kind=ir)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function gcf_ik(a, b) result(c)  
+
+    </h3>
+  <p>Calculate the greatest common factor of two int32 integers</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~45"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~51"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>integer(kind=ik)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function gcf_rat(a, b) result(c)  
+
+    </h3>
+  <p>Calculate the greatest common factor of two rationals</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~46"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~52"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/rational.html'>rational</a>)</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+              <div class="card">
+    <div class="card-header bg-light codesum">
+      <span class="anchor" id="interface-int"></span>
+      <h3>public        interface <a href='../interface/int.html'>int</a> 
+      </h3>
+    </div>
+      <div class="card-body">
+        <p>Integer part, truncated toward zero like the intrinsic</p>
+      </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    private elemental function rat_int(b) result(i)  
+
+    </h3>
+  <p>Convert rational to integer, truncating toward zero</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>integer(kind=ik)</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+              <div class="card">
+    <div class="card-header bg-light codesum">
+      <span class="anchor" id="interface-lcm"></span>
+      <h3>public        interface <a href='../interface/lcm.html'>lcm</a> 
+      </h3>
+    </div>
+      <div class="card-body">
+        <p>Least common multiple</p>
+      </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    private elemental function lcm_ir(a, b) result(c)  
+
+    </h3>
+  <p>Calculate the least common multiple of two integers</p>
+<p>Divide before multiplying to avoid intermediate overflow</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1031,10 +1315,10 @@
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental function gcf_ik(a, b) result(c)  
+    private elemental function lcm_ik(a, b) result(c)  
 
     </h3>
-  
+  <p>Calculate the least common multiple of two int32 integers</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1087,244 +1371,6 @@
     
 
           </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function gcf_rat(a, b) result(c)  
-
-    </h3>
-  <p>Calculate the greatest common factor of two rationals</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~44"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~50"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/rational.html'>rational</a>)</small>
-    </h4>
-    
-
-          </li>
-    </ul>
-  </div>
-
-              <div class="card">
-    <div class="card-header bg-light codesum">
-      <span class="anchor" id="interface-int"></span>
-      <h3>public        interface <a href='../interface/int.html'>int</a> 
-      </h3>
-    </div>
-    <ul class="list-group">
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function rat_int(b) result(i)  
-
-    </h3>
-  <p>Convert rational to integer</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>integer(kind=ik)</small>
-    </h4>
-    
-
-          </li>
-    </ul>
-  </div>
-
-              <div class="card">
-    <div class="card-header bg-light codesum">
-      <span class="anchor" id="interface-lcm"></span>
-      <h3>public        interface <a href='../interface/lcm.html'>lcm</a> 
-      </h3>
-    </div>
-    <ul class="list-group">
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function lcm_ir(a, b) result(c)  
-
-    </h3>
-  <p>Calculate the least common multiple of two integers</p>
-<p>Divide before multiplying to avoid intermediate overflow</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~40"></span>
-              integer(kind=ir),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~46"></span>
-              integer(kind=ir),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>integer(kind=ir)</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function lcm_ik(a, b) result(c)  
-
-    </h3>
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~41"></span>
-              integer(kind=ik),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~47"></span>
-              integer(kind=ik),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>integer(kind=ik)</small>
-    </h4>
-    
-
-          </li>
     </ul>
   </div>
 
@@ -1334,6 +1380,9 @@
       <h3>public        interface <a href='../interface/matmul.html'>matmul</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Matrix-matrix and matrix-vector product</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
@@ -1355,7 +1404,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~37"></span>
+              <span class="anchor" id="variable-a~39"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -1370,7 +1419,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~43"></span>
+              <span class="anchor" id="variable-b~45"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -1413,7 +1462,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~38"></span>
+              <span class="anchor" id="variable-a~40"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -1428,7 +1477,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~44"></span>
+              <span class="anchor" id="variable-b~46"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -1446,7 +1495,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/rational.html'>rational</a>), (size(b))</small>
+    <small>type(<a href='../type/rational.html'>rational</a>), (size(a,1))</small>
     </h4>
     
 
@@ -1460,10 +1509,13 @@
       <h3>public        interface <a href='../interface/max.html'>max</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Larger of two rationals</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_max(a, b) result(c)  
+    private elemental function rat_max(a, b) result(c)  
 
     </h3>
   <p>Maximum rational</p>
@@ -1481,7 +1533,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~35"></span>
+              <span class="anchor" id="variable-a~37"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -1496,7 +1548,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~41"></span>
+              <span class="anchor" id="variable-b~43"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -1528,10 +1580,13 @@
       <h3>public        interface <a href='../interface/min.html'>min</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Smaller of two rationals</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_min(a, b) result(c)  
+    private elemental function rat_min(a, b) result(c)  
 
     </h3>
   <p>Minimum rational</p>
@@ -1549,7 +1604,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~34"></span>
+              <span class="anchor" id="variable-a~36"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -1564,7 +1619,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~40"></span>
+              <span class="anchor" id="variable-b~42"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -1596,10 +1651,13 @@
       <h3>public        interface <a href='../interface/mod.html'>mod</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Remainder a - trunc(a/b)*b</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_mod(a, b) result(c)  
+    private elemental function rat_mod(a, b) result(c)  
 
     </h3>
   <p>Rational modulo: a - trunc(a/b)*b</p>
@@ -1617,7 +1675,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~48"></span>
+              <span class="anchor" id="variable-a~50"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -1632,7 +1690,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~57"></span>
+              <span class="anchor" id="variable-b~59"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -1664,13 +1722,564 @@
       <h3>public        interface <a href='../interface/operator(ASTERISK).html'>operator(*)</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Multiplication</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_mul_rat(a, b) result(c)  
+    private elemental function rat_mul_rat(a, b) result(c)  
 
     </h3>
-  <p>Multiply two rationals safely</p>
+  <p>Multiply two rationals, cancelling cross factors first
+(Knuth, TAOCP Vol. 2, 4.5.1)</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~9"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~15"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/rational.html'>rational</a>)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function rat_mul_int(a, b) result(c)  
+
+    </h3>
+  <p>Multiply rational and integer</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~10"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~16"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/rational.html'>rational</a>)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function int_mul_rat(a, b) result(c)  
+
+    </h3>
+  <p>Multiply integer and rational</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~11"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~17"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/rational.html'>rational</a>)</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+              <div class="card">
+    <div class="card-header bg-light codesum">
+      <span class="anchor" id="interface-operator%28ASTERISKASTERISK%29"></span>
+      <h3>public        interface <a href='../interface/operator(ASTERISKASTERISK).html'>operator(**)</a> 
+      </h3>
+    </div>
+      <div class="card-body">
+        <p>Integer power</p>
+      </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    private elemental function rat_power_int(a, b) result(c)  
+
+    </h3>
+  <p>Raise rational to integer power</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~15"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~21"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/rational.html'>rational</a>)</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+              <div class="card">
+    <div class="card-header bg-light codesum">
+      <span class="anchor" id="interface-operator%28%2B%29"></span>
+      <h3>public        interface <a href='../interface/operator(+).html'>operator(+)</a> 
+      </h3>
+    </div>
+      <div class="card-body">
+        <p>Addition, and unary plus</p>
+      </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    private elemental function rat_add_rat(a, b) result(c)  
+
+    </h3>
+  <p>Add two rationals (Knuth, TAOCP Vol. 2, 4.5.1); the result is
+already in lowest terms</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~3"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~8"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/rational.html'>rational</a>)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function rat_add_int(a, b) result(c)  
+
+    </h3>
+  <p>Add rational and integer</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~4"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~9"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/rational.html'>rational</a>)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function int_add_rat(a, b) result(c)  
+
+    </h3>
+  <p>Add integer and rational</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~5"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~10"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/rational.html'>rational</a>)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function unary_plus(self) result(r)  
+
+    </h3>
+  <p>Unary plus: returns its argument</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-self~10"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/rational.html'>rational</a>)</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+              <div class="card">
+    <div class="card-header bg-light codesum">
+      <span class="anchor" id="interface-operator%28-%29"></span>
+      <h3>public        interface <a href='../interface/operator(-).html'>operator(-)</a> 
+      </h3>
+    </div>
+      <div class="card-body">
+        <p>Subtraction, and negation</p>
+      </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    private elemental function rat_sub_rat(a, b) result(c)  
+
+    </h3>
+  <p>Subtract two rationals</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~6"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~11"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/rational.html'>rational</a>)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function rat_sub_int(a, b) result(c)  
+
+    </h3>
+  <p>Subtract integer from rational</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1687,6 +2296,64 @@
             <td>
               <span class="anchor" id="variable-a~7"></span>
               type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~12"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/rational.html'>rational</a>)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function int_sub_rat(a, b) result(c)  
+
+    </h3>
+  <p>Subtract rational from integer</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~8"></span>
+              integer(kind=ik),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -1725,10 +2392,10 @@
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_mul_int(a, b) result(c)  
+    private elemental function negate(b) result(n)  
 
     </h3>
-  <p>Multiply rational and integer</p>
+  <p>Negate rational</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1741,82 +2408,9 @@
         <th scope="col"></th>
     </thead>
     <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~8"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
         <tr>
             <td>
               <span class="anchor" id="variable-b~14"></span>
-              integer(kind=ik),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/rational.html'>rational</a>)</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function int_mul_rat(a, b) result(c)  
-
-    </h3>
-  <p>Multiple integer and rational</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~9"></span>
-              integer(kind=ik),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~15"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -1844,17 +2438,78 @@
 
               <div class="card">
     <div class="card-header bg-light codesum">
-      <span class="anchor" id="interface-operator%28ASTERISKASTERISK%29"></span>
-      <h3>public        interface <a href='../interface/operator(ASTERISKASTERISK).html'>operator(**)</a> 
+      <span class="anchor" id="interface-operator%28SLASH%29"></span>
+      <h3>public        interface <a href='../interface/operator(SLASH).html'>operator(/)</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Division; stops on division by zero</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_power_int(a, b) result(c)  
+    private elemental function rat_div_rat(a, b) result(c)  
 
     </h3>
-  <p>Raise rational to integer power</p>
+  <p>Divide two rationals</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~12"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~18"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/rational.html'>rational</a>)</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function rat_div_int(a, b) result(c)  
+
+    </h3>
+  <p>Divide rational by integer</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1907,589 +2562,9 @@
     
 
           </li>
-    </ul>
-  </div>
-
-              <div class="card">
-    <div class="card-header bg-light codesum">
-      <span class="anchor" id="interface-operator%28%2B%29"></span>
-      <h3>public        interface <a href='../interface/operator(+).html'>operator(+)</a> 
-      </h3>
-    </div>
-    <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_add_rat(a, b) result(c)  
-
-    </h3>
-  <p>Add two rationals</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~6"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/rational.html'>rational</a>)</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function rat_add_int(a, b) result(c)  
-
-    </h3>
-  <p>Add rational and integer</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~2"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~7"></span>
-              integer(kind=ik),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/rational.html'>rational</a>)</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function int_add_rat(a, b) result(c)  
-
-    </h3>
-  <p>Add integer and rational</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~3"></span>
-              integer(kind=ik),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~8"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/rational.html'>rational</a>)</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function unary_plus(self) result(r)  
-
-    </h3>
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-self~10"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>self</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/rational.html'>rational</a>)</small>
-    </h4>
-    
-
-          </li>
-    </ul>
-  </div>
-
-              <div class="card">
-    <div class="card-header bg-light codesum">
-      <span class="anchor" id="interface-operator%28-%29"></span>
-      <h3>public        interface <a href='../interface/operator(-).html'>operator(-)</a> 
-      </h3>
-    </div>
-    <ul class="list-group">
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function rat_sub_rat(a, b) result(c)  
-
-    </h3>
-  <p>Subtract two rationals</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~4"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~9"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/rational.html'>rational</a>)</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function rat_sub_int(a, b) result(c)  
-
-    </h3>
-  <p>Subtract integer from rational</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~5"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~10"></span>
-              integer(kind=ik),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/rational.html'>rational</a>)</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function int_sub_rat(a, b) result(c)  
-
-    </h3>
-  <p>Subtract rational from integer</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~6"></span>
-              integer(kind=ik),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~11"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/rational.html'>rational</a>)</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function negate(b) result(n)  
-
-    </h3>
-  <p>Negate rational</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~12"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/rational.html'>rational</a>)</small>
-    </h4>
-    
-
-          </li>
-    </ul>
-  </div>
-
-              <div class="card">
-    <div class="card-header bg-light codesum">
-      <span class="anchor" id="interface-operator%28SLASH%29"></span>
-      <h3>public        interface <a href='../interface/operator(SLASH).html'>operator(/)</a> 
-      </h3>
-    </div>
-    <ul class="list-group">
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function rat_div_rat(a, b) result(c)  
-
-    </h3>
-  <p>Divide two rationals safely</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~10"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~16"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/rational.html'>rational</a>)</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function rat_div_int(a, b) result(c)  
-
-    </h3>
-  <p>Divide rational by integer</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~11"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~17"></span>
-              integer(kind=ik),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/rational.html'>rational</a>)</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function int_div_rat(a, b) result(c)  
+    private elemental function int_div_rat(a, b) result(c)  
 
     </h3>
   <p>Divide integer by rational</p>
@@ -2507,7 +2582,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~12"></span>
+              <span class="anchor" id="variable-a~14"></span>
               integer(kind=ik),
             </td>
 <td>intent(in)</td>
@@ -2522,7 +2597,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~18"></span>
+              <span class="anchor" id="variable-b~20"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -2554,10 +2629,13 @@
       <h3>public        interface <a href='../interface/operator(SLASH=).html'>operator(/=)</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Inequality</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_ne_rat(a, b) result(c)  
+    private elemental function rat_ne_rat(a, b) result(c)  
 
     </h3>
   <p>Check rational != rational</p>
@@ -2575,124 +2653,8 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~17"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~23"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function rat_ne_int(a, b) result(c)  
-
-    </h3>
-  <p>Check rational != Int</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~18"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~24"></span>
-              integer(kind=ik),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function int_ne_rat(a, b) result(c)  
-
-    </h3>
-  <p>Check Int /= rational</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
               <span class="anchor" id="variable-a~19"></span>
-              integer(kind=ik),
+              type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2729,6 +2691,122 @@
     
 
           </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function rat_ne_int(a, b) result(c)  
+
+    </h3>
+  <p>Check rational != Int</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~20"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~26"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function int_ne_rat(a, b) result(c)  
+
+    </h3>
+  <p>Check Int /= rational</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~21"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~27"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
     </ul>
   </div>
 
@@ -2738,10 +2816,13 @@
       <h3>public        interface <a href='../interface/operator(lt).html'>operator(<)</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Less than</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_lt_rat(a, b) result(c)  
+    private elemental function rat_lt_rat(a, b) result(c)  
 
     </h3>
   <p>Check rational &lt; rational</p>
@@ -2759,124 +2840,8 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~23"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~29"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function rat_lt_int(a, b) result(c)  
-
-    </h3>
-  <p>Check rational &lt; Int</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~24"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~30"></span>
-              integer(kind=ik),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function int_lt_rat(a, b) result(c)  
-
-    </h3>
-  <p>Check Int &lt; rational</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
               <span class="anchor" id="variable-a~25"></span>
-              integer(kind=ik),
+              type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -2913,6 +2878,122 @@
     
 
           </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function rat_lt_int(a, b) result(c)  
+
+    </h3>
+  <p>Check rational &lt; Int</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~26"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~32"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function int_lt_rat(a, b) result(c)  
+
+    </h3>
+  <p>Check Int &lt; rational</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~27"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~33"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
     </ul>
   </div>
 
@@ -2922,10 +3003,13 @@
       <h3>public        interface <a href='../interface/operator(lt=).html'>operator(<=)</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Less than or equal</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_le_rat(a, b) result(c)  
+    private elemental function rat_le_rat(a, b) result(c)  
 
     </h3>
   <p>Check rational &lt;= rational</p>
@@ -2943,124 +3027,8 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~29"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~35"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function rat_le_int(a, b) result(c)  
-
-    </h3>
-  <p>Check rational &lt;= Int</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~30"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~36"></span>
-              integer(kind=ik),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function int_le_rat(a, b) result(c)  
-
-    </h3>
-  <p>Check Int &lt;= rational</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
               <span class="anchor" id="variable-a~31"></span>
-              integer(kind=ik),
+              type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -3097,6 +3065,122 @@
     
 
           </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function rat_le_int(a, b) result(c)  
+
+    </h3>
+  <p>Check rational &lt;= Int</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~32"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~38"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function int_le_rat(a, b) result(c)  
+
+    </h3>
+  <p>Check Int &lt;= rational</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~33"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~39"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
     </ul>
   </div>
 
@@ -3106,10 +3190,13 @@
       <h3>public        interface <a href='../interface/operator(==).html'>operator(==)</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Equality</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_eq_rat(a, b) result(c)  
+    private elemental function rat_eq_rat(a, b) result(c)  
 
     </h3>
   <p>Check rational == rational</p>
@@ -3127,124 +3214,8 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~14"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~20"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function rat_eq_int(a, b) result(c)  
-
-    </h3>
-  <p>Check rational == Int</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~15"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~21"></span>
-              integer(kind=ik),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function int_eq_rat(a, b) result(c)  
-
-    </h3>
-  <p>Check Int == rational</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
               <span class="anchor" id="variable-a~16"></span>
-              integer(kind=ik),
+              type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -3281,6 +3252,122 @@
     
 
           </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function rat_eq_int(a, b) result(c)  
+
+    </h3>
+  <p>Check rational == Int</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~17"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~23"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function int_eq_rat(a, b) result(c)  
+
+    </h3>
+  <p>Check Int == rational</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~18"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~24"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
     </ul>
   </div>
 
@@ -3290,10 +3377,13 @@
       <h3>public        interface <a href='../interface/operator(gt).html'>operator(>)</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Greater than</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_gt_rat(a, b) result(c)  
+    private elemental function rat_gt_rat(a, b) result(c)  
 
     </h3>
   <p>Check rational &gt; rational</p>
@@ -3311,124 +3401,8 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~20"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~26"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function rat_gt_int(a, b) result(c)  
-
-    </h3>
-  <p>Check rational &gt; Int</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~21"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~27"></span>
-              integer(kind=ik),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function int_gt_rat(a, b) result(c)  
-
-    </h3>
-  <p>Check Int &gt; rational</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
               <span class="anchor" id="variable-a~22"></span>
-              integer(kind=ik),
+              type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -3465,6 +3439,122 @@
     
 
           </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function rat_gt_int(a, b) result(c)  
+
+    </h3>
+  <p>Check rational &gt; Int</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~23"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~29"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function int_gt_rat(a, b) result(c)  
+
+    </h3>
+  <p>Check Int &gt; rational</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~24"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~30"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
     </ul>
   </div>
 
@@ -3474,10 +3564,13 @@
       <h3>public        interface <a href='../interface/operator(gt=).html'>operator(>=)</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Greater than or equal</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_ge_rat(a, b) result(c)  
+    private elemental function rat_ge_rat(a, b) result(c)  
 
     </h3>
   <p>Check rational &gt;= rational</p>
@@ -3495,124 +3588,8 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~26"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~32"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function rat_ge_int(a, b) result(c)  
-
-    </h3>
-  <p>Check rational &gt;= Int</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~27"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~33"></span>
-              integer(kind=ik),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical</small>
-    </h4>
-    
-
-          </li>
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function int_ge_rat(a, b) result(c)  
-
-    </h3>
-  <p>Check Int &gt;= rational</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
               <span class="anchor" id="variable-a~28"></span>
-              integer(kind=ik),
+              type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -3649,6 +3626,122 @@
     
 
           </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function rat_ge_int(a, b) result(c)  
+
+    </h3>
+  <p>Check rational &gt;= Int</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~29"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~35"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
+          <li class="list-group-item">
+                <h3>
+    private elemental function int_ge_rat(a, b) result(c)  
+
+    </h3>
+  <p>Check Int &gt;= rational</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~30"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~36"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
     </ul>
   </div>
 
@@ -3658,6 +3751,9 @@
       <h3>public        interface <a href='../interface/product.html'>product</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Product of a rational vector</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
@@ -3679,7 +3775,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~51"></span>
+              <span class="anchor" id="variable-a~53"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -3711,13 +3807,17 @@
       <h3>public        interface <a href='../interface/random_number.html'>random_number</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Random rational in [0, 1] with denominator dividing the order
+set by set_order</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
     private impure elemental subroutine rat_rand(a)  
 
     </h3>
-  <p>Retrieve random rational (0.0, order)</p>
+  <p>Random rational in [0, 1] with denominator dividing order</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -3732,7 +3832,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~45"></span>
+              <span class="anchor" id="variable-a~47"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(out)</td>
@@ -3759,13 +3859,19 @@
       <h3>public        interface <a href='../interface/rational.html'>rational</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Construct from numerator and denominator, an integer, a real,
+or text such as &ldquo;3/4&rdquo;, &ldquo;-2&rdquo; or &ldquo;0.75&rdquo;</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_const_real(r) result(rat)  
+    private elemental function rat_const_real(r) result(rat)  
 
     </h3>
-  <p>Construct rational from real</p>
+  <p>Construct rational from real: the simplest fraction that converts
+back to exactly r, or else the closest continued-fraction
+convergent that fits in 64 bits</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -3780,7 +3886,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-r"></span>
+              <span class="anchor" id="variable-r~2"></span>
               real(kind=rk),
             </td>
 <td>intent(in)</td>
@@ -3808,7 +3914,7 @@
     private impure elemental function rat_const_char(str) result(r)  
 
     </h3>
-  <p>Construct rational from character</p>
+  <p>Construct rational from character, such as &ldquo;3/4&rdquo;, &ldquo;-2&rdquo; or &ldquo;0.75&rdquo;</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -3823,7 +3929,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str"></span>
+              <span class="anchor" id="variable-str~2"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -3848,7 +3954,7 @@
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_const_int(n) result(rat)  
+    private elemental function rat_const_int(n) result(rat)  
 
     </h3>
   <p>Construct rational from integer</p>
@@ -3866,7 +3972,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-n~3"></span>
+              <span class="anchor" id="variable-n~4"></span>
               integer(kind=ik),
             </td>
 <td>intent(in)</td>
@@ -3891,7 +3997,7 @@
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_const_ik(n, d) result(rat)  
+    private elemental function rat_const_ik(n, d) result(rat)  
 
     </h3>
   <p>Construct rational from numerator and denominator</p>
@@ -3909,7 +4015,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-n"></span>
+              <span class="anchor" id="variable-n~2"></span>
               integer(kind=ik),
             </td>
 <td>intent(in)</td>
@@ -3949,7 +4055,7 @@
           </li>
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_const_ir(n, d) result(rat)  
+    private elemental function rat_const_ir(n, d) result(rat)  
 
     </h3>
   <p>Construct rational from numerator and denominator</p>
@@ -3967,7 +4073,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-n~2"></span>
+              <span class="anchor" id="variable-n~3"></span>
               integer(kind=ir),
             </td>
 <td>intent(in)</td>
@@ -4014,10 +4120,13 @@
       <h3>public        interface <a href='../interface/real.html'>real</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Nearest real(real64)</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_real(b) result(r)  
+    private elemental function rat_real(b) result(r)  
 
     </h3>
   <p>Convert rational to real</p>
@@ -4067,13 +4176,17 @@
       <h3>public        interface <a href='../interface/round.html'>round</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Nearest integer, ties away from zero</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_round(b) result(n)  
+    private elemental function rat_round(b) result(n)  
 
     </h3>
   <p>Round to nearest integer; ties round away from zero</p>
+<p>r &gt;= den - r is 2r &gt;= den without overflow</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -4088,7 +4201,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~55"></span>
+              <span class="anchor" id="variable-b~57"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -4098,7 +4211,7 @@
             <td>::</td>
             <td><strong>b</strong></td>
             <td>
-                <p>Add/subtract 1/2 then truncate</p>
+                
             </td>
         </tr>
     </tbody>
@@ -4120,10 +4233,13 @@
       <h3>public        interface <a href='../interface/sign.html'>sign</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Magnitude of the first argument with the sign of the second</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_sign(a, b) result(c)  
+    private elemental function rat_sign(a, b) result(c)  
 
     </h3>
   <p>Sign transfer: magnitude of a with sign of b (mirrors intrinsic sign())</p>
@@ -4141,7 +4257,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~46"></span>
+              <span class="anchor" id="variable-a~48"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -4156,7 +4272,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~51"></span>
+              <span class="anchor" id="variable-b~53"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -4188,6 +4304,9 @@
       <h3>public        interface <a href='../interface/sum.html'>sum</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Sum of a rational vector</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
@@ -4209,7 +4328,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~50"></span>
+              <span class="anchor" id="variable-a~52"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -4241,6 +4360,9 @@
       <h3>public        interface <a href='../interface/transpose.html'>transpose</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Matrix transpose</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
@@ -4262,7 +4384,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~39"></span>
+              <span class="anchor" id="variable-a~41"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -4294,10 +4416,13 @@
       <h3>public        interface <a href='../interface/trunc.html'>trunc</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Integer part, truncated toward zero</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private pure elemental function rat_trunc(b) result(n)  
+    private elemental function rat_trunc(b) result(n)  
 
     </h3>
   <p>Truncation toward zero (same as int() for positive, ceiling for negative)
@@ -4316,7 +4441,7 @@ Fortran integer division truncates toward zero</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~54"></span>
+              <span class="anchor" id="variable-b~56"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -4358,23 +4483,26 @@ Fortran integer division truncates toward zero</p>
       </h3>
     </div>
     <div class="card-body">
-      
+      <p>Rational number num/den in lowest terms with den &gt; 0</p>
 
 
         <h4>Constructor</h4>
-          
+          <p>Construct from numerator and denominator, an integer, a real,
+or text such as &ldquo;3/4&rdquo;, &ldquo;-2&rdquo; or &ldquo;0.75&rdquo;</p>
         <table class="table table-striped varlist">
           <tbody>
                 <tr>
                   <td>
                         private
 
-                    pure, elemental
+                    elemental
                     function
                     <strong>rat_const_real</strong>
                     (r)
                   </td>
-                  <td><p>Construct rational from real</p></td>
+                  <td><p>Construct rational from real: the simplest fraction that converts
+back to exactly r, or else the closest continued-fraction
+convergent that fits in 64 bits</p></td>
                 </tr>
                 <tr>
                   <td>
@@ -4385,13 +4513,13 @@ Fortran integer division truncates toward zero</p>
                     <strong>rat_const_char</strong>
                     (str)
                   </td>
-                  <td><p>Construct rational from character</p></td>
+                  <td><p>Construct rational from character, such as &ldquo;3/4&rdquo;, &ldquo;-2&rdquo; or &ldquo;0.75&rdquo;</p></td>
                 </tr>
                 <tr>
                   <td>
                         private
 
-                    pure, elemental
+                    elemental
                     function
                     <strong>rat_const_int</strong>
                     (n)
@@ -4402,7 +4530,7 @@ Fortran integer division truncates toward zero</p>
                   <td>
                         private
 
-                    pure, elemental
+                    elemental
                     function
                     <strong>rat_const_ik</strong>
                     (n, d)
@@ -4413,7 +4541,7 @@ Fortran integer division truncates toward zero</p>
                   <td>
                         private
 
-                    pure, elemental
+                    elemental
                     function
                     <strong>rat_const_ir</strong>
                     (n, d)
@@ -4488,7 +4616,7 @@ Fortran integer division truncates toward zero</p>
 </h3></div>
     <div class="card-body">
           
-  <p>Set order for random number generation</p>
+  <p>Set the denominator used by random_number</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -4546,7 +4674,7 @@ Fortran integer division truncates toward zero</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2026-09-24 05:10 +0000             </p>
+ on 2026-09-24 05:48 +0000             </p>
           </div>
         </div>
         <br>

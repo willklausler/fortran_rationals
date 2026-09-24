@@ -97,16 +97,34 @@
           <h1>Fortran Rationals</h1>
           <h1 id="fortran-rationals">Fortran rationals</h1>
 <h2 id="about">About</h2>
-<p>A package that implements rationals number as a numeric type, useful for lossless computations. Arithmetic procedures are all pure and elemental.</p>
+<p>A package that implements rational numbers as a numeric type, for exact computations. Arithmetic procedures are all elemental.</p>
+<p>Values are kept in lowest terms with a positive denominator. Arithmetic is checked: an operation whose exact result does not fit in 64 bits stops with an error instead of returning a wrong answer.</p>
+<h2 id="install">Install</h2>
+<p>Add the package to the <code>[dependencies]</code> of your <code>fpm.toml</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">[dependencies]</span>
+<span class="n">fortran_rationals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">git</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">"https://github.com/willklausler/fortran_rationals"</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+
+<h2 id="build">Build</h2>
+<p>With <a href="https://fpm.fortran-lang.org">fpm</a>:</p>
+<div class="codehilite"><pre><span></span><code>fpm<span class="w"> </span>build
+fpm<span class="w"> </span><span class="nb">test</span>
+fpm<span class="w"> </span>run<span class="w"> </span>--example
+</code></pre></div>
+
+<p>Without fpm, the library is a single file: <code>gfortran -c src/rationals.f90</code> (or any Fortran 2018 compiler).</p>
 <h2 id="use">Use</h2>
-<p>Here is an overview, see test and example code for all available uses</p>
-<div class="codehilite"><pre><span></span><code><span class="c">! Declarae type</span>
+<p>Here is an overview; see the test and example code for all available uses.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">use </span><span class="n">rationals</span>
+
+<span class="c">! Declare type</span>
 <span class="k">type</span><span class="p">(</span><span class="n">rational</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span>
 
 <span class="c">! Set value via constructor</span>
-<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="c">! fraction 2/3</span>
-<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w">   </span><span class="c">! integer 2</span>
-<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="s2">"3/4"</span><span class="p">)</span><span class="w"> </span><span class="c">! fraction 3/4</span>
+<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span><span class="w">     </span><span class="c">! fraction 2/3</span>
+<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w">       </span><span class="c">! integer 2</span>
+<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="s2">"3/4"</span><span class="p">)</span><span class="w">   </span><span class="c">! fraction 3/4</span>
+<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="mf">0.75d0</span><span class="p">)</span><span class="w">  </span><span class="c">! fraction 3/4, the simplest fraction equal to the real</span>
 
 <span class="c">! Set value via assignment</span>
 <span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w">   </span><span class="c">! integer 2</span>
@@ -124,6 +142,22 @@
 <span class="k">  write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">rational</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">13</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span><span class="o">/</span><span class="mi">21</span>
 <span class="k">end if</span>
 </code></pre></div>
+
+<p>The module does not export kind parameters. Where a kind is needed, use <code>int32</code>, <code>int64</code> and <code>real64</code> from <code>iso_fortran_env</code>.</p>
+<h2 id="limitations">Limitations</h2>
+<ul>
+<li><strong>Range.</strong> Numerator and denominator are <code>int64</code>. Repeated sums and products grow denominators quickly, so long computations (for example Gaussian elimination on larger matrices) can exceed this range. The program then stops with <code>rational: integer overflow</code>. There is no arbitrary-precision fallback.</li>
+<li><strong>Errors stop the program.</strong> Overflow, division by zero, and unparsable text all use <code>error stop</code>, so they cannot be caught.</li>
+<li><strong>Integer kinds.</strong> Mixed rational-integer operators accept <code>int32</code> integers. Construct <code>int64</code> values with <code>rational(n, d)</code>.</li>
+<li><strong>Reals.</strong> Conversion from <code>real64</code> gives the simplest fraction that converts back to exactly the same real. A decimal like <code>0.1</code> becomes <code>1/10</code>, but this is the value the real represents, not necessarily the one intended.</li>
+<li><strong>Formatted input.</strong> <code>read</code> with <code>DT</code> or list-directed formatting works for values in the middle of a record, but compilers differ at the end of a record: gfortran skips the next record, ifx reports end-of-record for <code>(DT)</code>, and nvfortran fails. For portable input, read a line into a character variable and use <code>rational(str)</code>.</li>
+</ul>
+<h2 id="references">References</h2>
+<ul>
+<li>D. E. Knuth, <em>The Art of Computer Programming</em>, Vol. 2: <em>Seminumerical Algorithms</em>, 3rd ed., Addison-Wesley, 1997, Section 4.5.1, &ldquo;Fractions&rdquo;. Addition and multiplication follow its reduce-before-multiply method.</li>
+</ul>
+<h2 id="license">License</h2>
+<p><a href="LICENSE">MIT</a></p>
         </div>
           <div class="col-md-4">
             <div class="card card-body bg-light">
@@ -205,7 +239,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2026-09-24 05:10 +0000             </p>
+ on 2026-09-24 05:48 +0000             </p>
           </div>
         </div>
         <br>

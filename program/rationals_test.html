@@ -90,7 +90,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="93.9% of total for programs.">474 statements</a>
+                 title="94.0% of total for programs.">505 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -131,19 +131,16 @@
       </a>
       <div id="vars-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../program/rationals_test.html#variable-a~52">a</a>
-            <a class="list-group-item" href="../program/rationals_test.html#variable-b~59">b</a>
+            <a class="list-group-item" href="../program/rationals_test.html#variable-a~54">a</a>
+            <a class="list-group-item" href="../program/rationals_test.html#variable-b~61">b</a>
             <a class="list-group-item" href="../program/rationals_test.html#variable-fmt1">fmt1</a>
             <a class="list-group-item" href="../program/rationals_test.html#variable-fmt2">fmt2</a>
-            <a class="list-group-item" href="../program/rationals_test.html#variable-iomsg~3">iomsg</a>
             <a class="list-group-item" href="../program/rationals_test.html#variable-m">m</a>
-            <a class="list-group-item" href="../program/rationals_test.html#variable-n~9">n</a>
+            <a class="list-group-item" href="../program/rationals_test.html#variable-n~10">n</a>
             <a class="list-group-item" href="../program/rationals_test.html#variable-ord~2">ord</a>
             <a class="list-group-item" href="../program/rationals_test.html#variable-p~2">p</a>
-            <a class="list-group-item" href="../program/rationals_test.html#variable-stat">stat</a>
-            <a class="list-group-item" href="../program/rationals_test.html#variable-str~3">str</a>
+            <a class="list-group-item" href="../program/rationals_test.html#variable-str~4">str</a>
             <a class="list-group-item" href="../program/rationals_test.html#variable-u">u</a>
-            <a class="list-group-item" href="../program/rationals_test.html#variable-unit~3">unit</a>
             <a class="list-group-item" href="../program/rationals_test.html#variable-v">v</a>
             <a class="list-group-item" href="../program/rationals_test.html#variable-yoog">yoog</a>
         </div>
@@ -187,6 +184,7 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
+                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
                   <li class="list-inline-item"><a href='../module/rationals.html'>rationals</a></li>
               </ul>
             </li>
@@ -195,7 +193,8 @@
     </div>
 
     <p>Showcase rationals</p>
-<p>Sign transfer: magnitude of a, sign of b
+<p>write(DT) emits char(); formatted DT input is compiler dependent
+Sign transfer: magnitude of a, sign of b
 Zero as b: treat as non-negative (matches intrinsic convention)
 Same value, different representation (relies on simplify invariant)</p>
 <hr>
@@ -217,6 +216,13 @@ Sum of empty array should be zero (additive identity)</p>
 Single element
 Product containing zero: result is zero
 Empty array should be one (multiplicative identity)</p>
+<hr>
+<p>Real conversion gives the simplest exact fraction
+Reciprocal of a negative keeps the denominator positive
+int() truncates like the intrinsic
+Comparison near the int64 limit must not overflow
+Addition cancels common denominator factors before multiplying
+Non-square matrix-vector product</p>
 <br>
 
     <section>
@@ -233,7 +239,7 @@ Empty array should be one (multiplicative identity)</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~52"></span>
+              <span class="anchor" id="variable-a~54"></span>
               type(<a href='../type/rational.html'>rational</a>)
             </td>
             <td>
@@ -249,7 +255,7 @@ Empty array should be one (multiplicative identity)</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~59"></span>
+              <span class="anchor" id="variable-b~61"></span>
               type(<a href='../type/rational.html'>rational</a>)
             </td>
             <td>
@@ -297,22 +303,6 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-iomsg~3"></span>
-              character(len=50)
-            </td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>iomsg</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
               <span class="anchor" id="variable-m"></span>
               type(<a href='../type/rational.html'>rational</a>)
             </td>
@@ -329,7 +319,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-n~9"></span>
+              <span class="anchor" id="variable-n~10"></span>
               type(<a href='../type/rational.html'>rational</a>)
             </td>
             <td>
@@ -377,23 +367,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-stat"></span>
-              integer
-            </td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>stat</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-str~3"></span>
+              <span class="anchor" id="variable-str~4"></span>
               character(len=50)
             </td>
             <td>
@@ -417,22 +391,6 @@ parameter
             </td>
             <td>::</td>
             <td><strong>u</strong>(2)</td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-unit~3"></span>
-              integer
-            </td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>unit</strong></td>
                 <td></td>
                 <td></td>
             <td>
@@ -491,19 +449,17 @@ parameter
 <span class="c">!! Showcase rationals</span>
 
 <span class="w">  </span><span class="k">use </span><span class="n">rationals</span>
+<span class="w">  </span><span class="k">use </span><span class="n">iso_fortran_env</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">ir</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">int64</span><span class="p">,</span><span class="w"> </span><span class="n">ik</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">int32</span><span class="p">,</span><span class="w"> </span><span class="n">rk</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">real64</span>
 
 <span class="w">  </span><span class="k">implicit none</span>
 
 <span class="k">  </span><span class="kt">integer</span><span class="p">(</span><span class="n">ir</span><span class="p">),</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">yoog</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">huge</span><span class="p">(</span><span class="mi">1_ir</span><span class="p">)</span>
 
 <span class="w">  </span><span class="kt">integer</span><span class="p">(</span><span class="n">ik</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ord</span>
-<span class="w">  </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">unit</span>
-<span class="w">  </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">stat</span>
 
-<span class="nb">  </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fmt1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"(A20,': ')"</span>
+<span class="w">  </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fmt1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"(A20,': ')"</span>
 <span class="w">  </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">parameter</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">fmt2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"('passed')"</span>
 <span class="w">  </span><span class="kt">character</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">str</span>
-<span class="w">  </span><span class="kt">character</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iomsg</span>
 
 <span class="w">  </span><span class="k">type</span><span class="p">(</span><span class="n">rational</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span>
 
@@ -567,25 +523,16 @@ parameter
 <span class="w">  </span><span class="k">end if</span>
 <span class="k">  write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="n">fmt2</span><span class="p">)</span>
 
-<span class="w">  </span><span class="c">! write(*,fmt1,advance='no') "I/O round-trip"</span>
-<span class="w">  </span><span class="c">! a = rational(7_ik, 12_ik)</span>
-<span class="w">  </span><span class="c">! open(newunit=unit,file="scratch_io",action='write')</span>
-<span class="w">  </span><span class="c">! write(unit,"(DT)") a</span>
-<span class="w">  </span><span class="c">! close(unit)</span>
-<span class="w">  </span><span class="c">! open(newunit=unit,file="scratch_io",action='read')</span>
-<span class="w">  </span><span class="c">! read(unit,*, iostat=stat, iomsg=iomsg) b</span>
-<span class="w">  </span><span class="c">! read(unit,"(DT)", iostat=stat, iomsg=iomsg) b</span>
-<span class="w">  </span><span class="c">! close(unit, status='delete')</span>
-<span class="w">  </span><span class="c">! if (stat /= 0) then</span>
-<span class="w">  </span><span class="c">!   write(*, "(A,I0,A,A)") "iostat=", stat, " iomsg=", trim(iomsg)</span>
-<span class="w">  </span><span class="c">!   error stop "I/O round-trip: read failed"</span>
-<span class="w">  </span><span class="c">! end if</span>
-<span class="w">  </span><span class="c">! if (a /= b) then</span>
-<span class="w">  </span><span class="c">!   error stop "I/O round-trip: value changed through write/read"</span>
-<span class="w">  </span><span class="c">! end if</span>
-<span class="w">  </span><span class="c">! write(*,fmt2)</span>
-
-<span class="w">  </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="n">fmt2</span><span class="p">)</span>
+<span class="w">  </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="n">fmt1</span><span class="p">,</span><span class="n">advance</span><span class="o">=</span><span class="s1">'no'</span><span class="p">)</span><span class="w"> </span><span class="s2">"Text round-trip"</span>
+<span class="w">  </span><span class="c">!! write(DT) emits char(); formatted DT input is compiler dependent</span>
+<span class="w">  </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="o">-</span><span class="mi">7_ik</span><span class="p">,</span><span class="w"> </span><span class="mi">12_ik</span><span class="p">)</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rational</span><span class="p">(</span><span class="nb">trim</span><span class="p">(</span><span class="nb">char</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">    error stop</span><span class="w"> </span><span class="s2">"Text round-trip: value changed through char/parse"</span>
+<span class="w">  </span><span class="k">end if</span>
+<span class="k">  if</span><span class="w"> </span><span class="p">(</span><span class="nb">char</span><span class="p">(</span><span class="n">rational</span><span class="p">(</span><span class="o">-</span><span class="mi">3_ik</span><span class="p">))</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="s2">"-3"</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">    error stop</span><span class="w"> </span><span class="s2">"char failed for integer"</span>
+<span class="w">  </span><span class="k">end if</span>
+<span class="k">  write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="n">fmt2</span><span class="p">)</span>
 
 <span class="w">  </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="n">fmt1</span><span class="p">,</span><span class="n">advance</span><span class="o">=</span><span class="s1">'no'</span><span class="p">)</span><span class="w"> </span><span class="s2">"Assignment"</span>
 <span class="w">  </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span>
@@ -1073,6 +1020,51 @@ parameter
 <span class="w">  </span><span class="k">end block</span>
 <span class="k">  write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="n">fmt2</span><span class="p">)</span>
 
+<span class="w">  </span><span class="c">!! -----------------------------------------------------------</span>
+<span class="w">  </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="n">fmt1</span><span class="p">,</span><span class="n">advance</span><span class="o">=</span><span class="s1">'no'</span><span class="p">)</span><span class="w"> </span><span class="s2">"Regressions"</span>
+<span class="w">  </span><span class="c">!! Real conversion gives the simplest exact fraction</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rational</span><span class="p">(</span><span class="mf">1.0_rk</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="mi">1_ik</span><span class="p">,</span><span class="w"> </span><span class="mi">3_ik</span><span class="p">))</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">    </span><span class="k">error stop</span><span class="w"> </span><span class="s2">"real conversion failed for 1/3"</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rational</span><span class="p">(</span><span class="mf">1.0e5_rk</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">100000</span><span class="p">)</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">    </span><span class="k">error stop</span><span class="w"> </span><span class="s2">"real conversion failed for 1e5"</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rational</span><span class="p">(</span><span class="o">-</span><span class="mf">2.5_rk</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="o">-</span><span class="mi">5_ik</span><span class="p">,</span><span class="w"> </span><span class="mi">2_ik</span><span class="p">))</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">    </span><span class="k">error stop</span><span class="w"> </span><span class="s2">"real conversion failed for -2.5"</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">rational</span><span class="p">(</span><span class="s2">"0.75"</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="mi">3_ik</span><span class="p">,</span><span class="w"> </span><span class="mi">4_ik</span><span class="p">))</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">    </span><span class="k">error stop</span><span class="w"> </span><span class="s2">"character conversion failed for 0.75"</span>
+<span class="w">  </span><span class="c">!! Reciprocal of a negative keeps the denominator positive</span>
+<span class="w">  </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="o">-</span><span class="mi">2_ik</span><span class="p">,</span><span class="w"> </span><span class="mi">3_ik</span><span class="p">)</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="p">%</span><span class="n">inverse</span><span class="p">()</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="o">-</span><span class="mi">3_ik</span><span class="p">,</span><span class="w"> </span><span class="mi">2_ik</span><span class="p">))</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">    </span><span class="k">error stop</span><span class="w"> </span><span class="s2">"inverse failed for negative"</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="o">-</span><span class="mi">3_ik</span><span class="p">,</span><span class="w"> </span><span class="mi">2_ik</span><span class="p">))</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">    </span><span class="k">error stop</span><span class="w"> </span><span class="s2">"negative power failed for negative base"</span>
+<span class="w">  </span><span class="c">!! int() truncates like the intrinsic</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">rational</span><span class="p">(</span><span class="mi">7_ik</span><span class="p">,</span><span class="w"> </span><span class="mi">2_ik</span><span class="p">))</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">    </span><span class="k">error stop</span><span class="w"> </span><span class="s2">"int failed: should truncate 7/2 to 3"</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">rational</span><span class="p">(</span><span class="o">-</span><span class="mi">7_ik</span><span class="p">,</span><span class="w"> </span><span class="mi">2_ik</span><span class="p">))</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="o">-</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">    </span><span class="k">error stop</span><span class="w"> </span><span class="s2">"int failed: should truncate -7/2 to -3"</span>
+<span class="w">  </span><span class="c">!! Comparison near the int64 limit must not overflow</span>
+<span class="w">  </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="n">yoog</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">yoog</span><span class="p">)</span>
+<span class="w">  </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="n">yoog</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">yoog</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">))</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">    </span><span class="k">error stop</span><span class="w"> </span><span class="s2">"comparison failed near int64 limit"</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="o">-</span><span class="n">b</span><span class="p">))</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">    </span><span class="k">error stop</span><span class="w"> </span><span class="s2">"negative comparison failed near int64 limit"</span>
+<span class="w">  </span><span class="c">!! Addition cancels common denominator factors before multiplying</span>
+<span class="w">  </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="mi">1_ir</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="o">*</span><span class="mi">10_ir</span><span class="o">**</span><span class="mi">17</span><span class="p">)</span>
+<span class="w">  </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="mi">1_ir</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="o">*</span><span class="mi">10_ir</span><span class="o">**</span><span class="mi">17</span><span class="p">)</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="mi">1_ir</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="o">*</span><span class="mi">10_ir</span><span class="o">**</span><span class="mi">16</span><span class="p">))</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">    </span><span class="k">error stop</span><span class="w"> </span><span class="s2">"addition failed for large common denominator"</span>
+<span class="w">  </span><span class="c">!! Non-square matrix-vector product</span>
+<span class="w">  </span><span class="k">block</span>
+<span class="k">    type</span><span class="p">(</span><span class="n">rational</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">r23</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="n">v3</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="n">w</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="w">    </span><span class="n">r23</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="mi">1_ik</span><span class="p">,</span><span class="w"> </span><span class="mi">2_ik</span><span class="p">)</span>
+<span class="w">    </span><span class="n">v3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rational</span><span class="p">(</span><span class="mi">2_ik</span><span class="p">)</span>
+<span class="w">    </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">matmul</span><span class="p">(</span><span class="n">r23</span><span class="p">,</span><span class="w"> </span><span class="n">v3</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="nb">any</span><span class="p">(</span><span class="n">w</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">3</span><span class="p">))</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">      </span><span class="k">error stop</span><span class="w"> </span><span class="s2">"matmul failed for non-square matrix-vector"</span>
+<span class="w">  </span><span class="k">end block</span>
+<span class="k">  write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="n">fmt2</span><span class="p">)</span>
+
 <span class="w">  </span><span class="k">write</span><span class="p">(</span><span class="o">*</span><span class="p">,</span><span class="s2">"(A)"</span><span class="p">)</span><span class="w"> </span><span class="s2">"All tests passed"</span>
 
 <span class="k">end program </span><span class="n">rationals_test</span>
@@ -1098,7 +1090,7 @@ parameter
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2026-09-24 05:10 +0000             </p>
+ on 2026-09-24 05:48 +0000             </p>
           </div>
         </div>
         <br>

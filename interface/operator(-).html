@@ -91,7 +91,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="<p> 2.2% of total for procedures.</p>Including implementation: 28 statements, 20.7% of total for procedures.">3 statements</a>
+                 title="<p> 2.2% of total for procedures.</p>Including implementation: 22 statements, 16.3% of total for procedures.">3 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -167,13 +167,13 @@
 
     <div class="col-md-9" id='text'>
       <h2>public interface operator(-)</h2>
-      
-
+      <p>Subtraction, and negation</p>
+<br>
 
 
         <h2>Module Procedures</h2>
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-rat_sub_rat"></span> <h3>private pure elemental function rat_sub_rat(a, b) result(c)  
+    <div class="card-header codesum"><span class="anchor" id="proc-rat_sub_rat"></span> <h3>private elemental function rat_sub_rat(a, b) result(c)  
 </h3></div>
     <div class="card-body">
         <p>Subtract two rationals</p>
@@ -191,126 +191,8 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~4"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~9"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/rational.html'>rational</a>)</small>
-    </h4>
-    
-
-    </div>
-  </div>
-
-            <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-rat_sub_int"></span> <h3>private pure elemental function rat_sub_int(a, b) result(c)  
-</h3></div>
-    <div class="card-body">
-        <p>Subtract integer from rational</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~5"></span>
-              type(<a href='../type/rational.html'>rational</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~10"></span>
-              integer(kind=ik),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/rational.html'>rational</a>)</small>
-    </h4>
-    
-
-    </div>
-  </div>
-
-            <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-int_sub_rat"></span> <h3>private pure elemental function int_sub_rat(a, b) result(c)  
-</h3></div>
-    <div class="card-body">
-        <p>Subtract rational from integer</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
               <span class="anchor" id="variable-a~6"></span>
-              integer(kind=ik),
+              type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -350,7 +232,125 @@
   </div>
 
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-negate"></span> <h3>private pure elemental function negate(b) result(n)  
+    <div class="card-header codesum"><span class="anchor" id="proc-rat_sub_int"></span> <h3>private elemental function rat_sub_int(a, b) result(c)  
+</h3></div>
+    <div class="card-body">
+        <p>Subtract integer from rational</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~7"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~12"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/rational.html'>rational</a>)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-int_sub_rat"></span> <h3>private elemental function int_sub_rat(a, b) result(c)  
+</h3></div>
+    <div class="card-body">
+        <p>Subtract rational from integer</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~8"></span>
+              integer(kind=ik),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~13"></span>
+              type(<a href='../type/rational.html'>rational</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/rational.html'>rational</a>)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-negate"></span> <h3>private elemental function negate(b) result(n)  
 </h3></div>
     <div class="card-body">
         <p>Negate rational</p>
@@ -368,7 +368,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~12"></span>
+              <span class="anchor" id="variable-b~14"></span>
               type(<a href='../type/rational.html'>rational</a>),
             </td>
 <td>intent(in)</td>
@@ -410,7 +410,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2026-09-24 05:10 +0000             </p>
+ on 2026-09-24 05:48 +0000             </p>
           </div>
         </div>
         <br>
