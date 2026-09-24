@@ -24,7 +24,7 @@ jobs:
           - {os: windows-latest, compiler: lfortran,   version: '0.58.0'}
     defaults:
       run:
-        shell: ${{ matrix.os == 'windows-latest' && 'pwsh' || 'bash' }}
+        shell: bash
     steps:
       - uses: actions/checkout@v4
 
@@ -47,13 +47,11 @@ jobs:
         with:
           fpm-version: v0.13.0
 
-      # Git's usr\bin puts coreutils `link` ahead of MSVC link.exe, which ifx needs
-      - name: Hide Git coreutils (Windows)
+      # setup-fortran hides GNU `link` (it shadows MSVC link.exe, which ifx
+      # needs) by moving it to RUNNER_TEMP; setup-fpm then puts RUNNER_TEMP on PATH
+      - name: Remove GNU link (Windows)
         if: runner.os == 'Windows'
-        run: |
-          $p = ($env:PATH -split ';' | Where-Object { $_ -notmatch 'Git\\usr\\bin' }) -join ';'
-          "PATH=$p" >> $env:GITHUB_ENV
-          Get-Command link -All | Select-Object -ExpandProperty Source
+        run: rm -f "$RUNNER_TEMP/link" "$RUNNER_TEMP/link.exe"
 
       # the prebuilt macOS fpm binary links against Homebrew's gcc@12 runtime
       - name: Install fpm runtime (macOS)
@@ -61,7 +59,7 @@ jobs:
         run: brew install gcc@12
 
       - name: fpm test (debug)
-        run: fpm test --compiler ${{ env.FC }} --profile debug
+        run: fpm test --compiler "$FC" --profile debug
 
       - name: fpm test (release)
-        run: fpm test --compiler ${{ env.FC }} --profile release
+        run: fpm test --compiler "$FC" --profile release
