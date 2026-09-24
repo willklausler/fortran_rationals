@@ -47,6 +47,11 @@ jobs:
         with:
           fpm-version: v0.13.0
 
+      # the prebuilt macOS fpm binary links against Homebrew's gcc@12 runtime
+      - name: Install fpm runtime (macOS)
+        if: runner.os == 'macOS'
+        run: brew install gcc@12
+
       - name: fpm test (debug)
         run: fpm test --compiler "$FC" --profile debug
 
