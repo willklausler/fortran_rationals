@@ -24,7 +24,6 @@ jobs:
           - {os: windows-latest, compiler: lfortran,   version: '0.58.0'}
     defaults:
       run:
-        # Git Bash's coreutils `link` shadows MSVC link.exe, which ifx needs
         shell: ${{ matrix.os == 'windows-latest' && 'pwsh' || 'bash' }}
     steps:
       - uses: actions/checkout@v4
@@ -47,6 +46,14 @@ jobs:
       - uses: fortran-lang/setup-fpm@v10
         with:
           fpm-version: v0.13.0
+
+      # Git's usr\bin puts coreutils `link` ahead of MSVC link.exe, which ifx needs
+      - name: Hide Git coreutils (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          $p = ($env:PATH -split ';' | Where-Object { $_ -notmatch 'Git\\usr\\bin' }) -join ';'
+          "PATH=$p" >> $env:GITHUB_ENV
+          Get-Command link -All | Select-Object -ExpandProperty Source
 
       # the prebuilt macOS fpm binary links against Homebrew's gcc@12 runtime
       - name: Install fpm runtime (macOS)
