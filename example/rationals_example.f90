@@ -1,6 +1,8 @@
 program example
+!! Rational approximations of pi and the square root of two
 
   use rationals
+  use iso_fortran_env, only: rk => real64
 
   implicit none
 
@@ -11,6 +13,7 @@ program example
 contains
 
 subroutine ex1()
+!! Rational representation of pi, and its decimal truncations
 
   integer :: i
 
@@ -35,6 +38,7 @@ end subroutine ex1
 !***********************************************************************
 
 subroutine ex2()
+!! Continued-fraction iteration converging to the square root of two
 
   integer :: i
 
@@ -46,7 +50,7 @@ subroutine ex2()
 
   do i = 1,10
     roottwo = 1 + 1/(1 + roottwo)
-    write(*,"(I3,')',1x,$)") i
+    write(*,"(I3,')',1x)",advance='no') i
     write(*,*) roottwo, real(roottwo), real(roottwo*roottwo)
   end do ! i
 

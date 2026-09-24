@@ -1,7 +1,7 @@
 # TOML file for fpm as described at https://fpm.fortran-lang.org/en/spec/manifest.html
 name = "fortran_rationals"
 version = "0.1.0"
-license = "license"
+license = "MIT"
 author = "Will Klausler"
 maintainer = "wklausler@protonmail.com"
 copyright = "Copyright 2026, Will Klausler"

@@ -2,19 +2,17 @@ program rationals_test
 !! Showcase rationals
 
   use rationals
+  use iso_fortran_env, only: ir => int64, ik => int32, rk => real64
 
   implicit none
 
   integer(ir), parameter :: yoog = huge(1_ir)
 
   integer(ik) :: ord
-  integer :: unit
-  integer :: stat
 
   character(*), parameter :: fmt1 = "(A20,': ')"
   character(*), parameter :: fmt2 = "('passed')"
   character(50) :: str
-  character(50) :: iomsg
 
   type(rational) :: a, b
 
@@ -78,24 +76,15 @@ program rationals_test
   end if
   write(*,fmt2)
 
-  ! write(*,fmt1,advance='no') "I/O round-trip"
-  ! a = rational(7_ik, 12_ik)
-  ! open(newunit=unit,file="scratch_io",action='write')
-  ! write(unit,"(DT)") a
-  ! close(unit)
-  ! open(newunit=unit,file="scratch_io",action='read')
-  ! read(unit,*, iostat=stat, iomsg=iomsg) b
-  ! read(unit,"(DT)", iostat=stat, iomsg=iomsg) b
-  ! close(unit, status='delete')
-  ! if (stat /= 0) then
-  !   write(*, "(A,I0,A,A)") "iostat=", stat, " iomsg=", trim(iomsg)
-  !   error stop "I/O round-trip: read failed"
-  ! end if
-  ! if (a /= b) then
-  !   error stop "I/O round-trip: value changed through write/read"
-  ! end if
-  ! write(*,fmt2)
-
+  write(*,fmt1,advance='no') "Text round-trip"
+  !! write(DT) emits char(); formatted DT input is compiler dependent
+  a = rational(-7_ik, 12_ik)
+  if (rational(trim(char(a))) /= a) then
+    error stop "Text round-trip: value changed through char/parse"
+  end if
+  if (char(rational(-3_ik)) /= "-3") then
+    error stop "char failed for integer"
+  end if
   write(*,fmt2)
 
   write(*,fmt1,advance='no') "Assignment"
@@ -581,6 +570,51 @@ program rationals_test
     type(rational) :: empty(0)
     if (product(empty) /= rational(1_ik, 1_ik)) &
       error stop "product failed for empty array: expected 1"
+  end block
+  write(*,fmt2)
+
+  !! -----------------------------------------------------------
+  write(*,fmt1,advance='no') "Regressions"
+  !! Real conversion gives the simplest exact fraction
+  if (rational(1.0_rk/3) /= rational(1_ik, 3_ik)) &
+    error stop "real conversion failed for 1/3"
+  if (rational(1.0e5_rk) /= 100000) &
+    error stop "real conversion failed for 1e5"
+  if (rational(-2.5_rk) /= rational(-5_ik, 2_ik)) &
+    error stop "real conversion failed for -2.5"
+  if (rational("0.75") /= rational(3_ik, 4_ik)) &
+    error stop "character conversion failed for 0.75"
+  !! Reciprocal of a negative keeps the denominator positive
+  a = rational(-2_ik, 3_ik)
+  if (a%inverse() /= rational(-3_ik, 2_ik)) &
+    error stop "inverse failed for negative"
+  if (a**(-1) /= rational(-3_ik, 2_ik)) &
+    error stop "negative power failed for negative base"
+  !! int() truncates like the intrinsic
+  if (int(rational(7_ik, 2_ik)) /= 3) &
+    error stop "int failed: should truncate 7/2 to 3"
+  if (int(rational(-7_ik, 2_ik)) /= -3) &
+    error stop "int failed: should truncate -7/2 to -3"
+  !! Comparison near the int64 limit must not overflow
+  a = rational(yoog - 1, yoog)
+  b = rational(yoog - 2, yoog - 1)
+  if (.not. (a > b)) &
+    error stop "comparison failed near int64 limit"
+  if (.not. (-a < -b)) &
+    error stop "negative comparison failed near int64 limit"
+  !! Addition cancels common denominator factors before multiplying
+  a = rational(1_ir, 2*10_ir**17)
+  b = rational(1_ir, 3*10_ir**17)
+  if (a + b /= rational(1_ir, 12*10_ir**16)) &
+    error stop "addition failed for large common denominator"
+  !! Non-square matrix-vector product
+  block
+    type(rational) :: r23(2,3), v3(3), w(2)
+    r23 = rational(1_ik, 2_ik)
+    v3 = rational(2_ik)
+    w = matmul(r23, v3)
+    if (size(w) /= 2 .or. any(w /= 3)) &
+      error stop "matmul failed for non-square matrix-vector"
   end block
   write(*,fmt2)
 
