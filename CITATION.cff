@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "fortran_rationals: exact rational numbers with checked arithmetic"
+type: software
+authors:
+  - family-names: Klausler
+    given-names: Will
+version: 0.2.0
+date-released: 2026-10-10
+license: MIT
+repository-code: "https://github.com/willklausler/fortran_rationals"
+url: "https://willklausler.github.io/fortran_rationals/"
+keywords:
+  - Fortran
+  - rational
+  - exact arithmetic

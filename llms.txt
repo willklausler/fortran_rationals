@@ -1,0 +1,161 @@
+# fortran_rationals
+
+> Fortran module `rationals`: the derived type `rational`, an exact fraction with 64-bit numerator and denominator, with arithmetic and comparison operators and the numeric intrinsics overloaded. Overflow stops the program instead of returning a wrong value. Fortran 2018, fpm or make. This file is the complete API reference for tools and coding agents; it is checked against the source in CI.
+
+Use: `use rationals` (everything) or `use rationals, only: rational, operator(+), ...`.
+fpm dependency: `fortran_rationals = { git = "https://github.com/willklausler/fortran_rationals" }`
+Kinds are not exported: use `int32`, `int64`, `real64` from `iso_fortran_env`.
+
+## Conventions (read first)
+
+- A `rational` is num/den with `int64` parts, always in lowest terms with den > 0. Zero is 0/1. A declared but unassigned `rational` is 0.
+- The components are private. Read them with `r%get_num()` and `r%get_den()`; build values with the constructor `rational(...)` or by assignment.
+- `==` and `/=` are exact. Because values are in lowest terms they compare numerator and denominator. `<`, `>`, `<=`, `>=` and `compare` never overflow.
+- Mixed operations take a rational and an `int32` integer. Use `rational(n, d)` with `int64` arguments for larger integers. Reals are converted only by the constructor or by assignment, never implicitly in an operator.
+- Error policy: the library stops with `error stop` and a message on integer overflow (`rational: integer overflow`), division by zero (`rational: division by zero`), text that is not a rational (`rational: cannot parse character input`), reals beyond the int64 range or NaN (`rational: real value out of range`), and results that do not fit the returned integer kind (`int: ...`, `gcf: ...`, `lcm: ...`). Errors cannot be caught. A failed derived-type `read` returns `iostat > 0` instead.
+- Addition, multiplication and comparison keep intermediate integers small (Knuth's cancellation before multiplying, continued fractions for comparison), so overflow means the exact result itself does not fit in 64 bits.
+- `random_number` uses module state set by `set_order`; it is not thread safe.
+
+## Types and constructors
+
+`type(rational)`; elemental constructors (E):
+
+| Call | Result |
+|---|---|
+| `rational(n, d)` E | n/d in lowest terms; `n`, `d` both `int32` or both `int64`; `d = 0` stops |
+| `rational(n)` E | n/1, `n` is `int32` |
+| `rational(x)` E | `x` is `real64`: the simplest fraction that converts back to exactly `x` (`rational(0.1_dp)` = 1/10); if none fits in 64 bits, the closest continued-fraction convergent that does |
+| `rational(str)` E | text `"n"`, `"n/d"` (blanks allowed) or a decimal real such as `"0.75"` or `"1e-3"`, which goes through `real64` |
+
+Assignment `r = s` (rational), `r = n` (`int32`) or `r = x` (`real64`, as `rational(x)`). Elemental.
+
+## Operators
+
+All elemental. `R` = rational, `I` = `int32`.
+
+| Operator | Operands |
+|---|---|
+| `+`, `-` | unary R; R op R, R op I, I op R |
+| `*`, `/` | R op R, R op I, I op R; division by zero stops |
+| `**` | R**I; a negative exponent inverts; `0**(-n)` stops |
+| `==`, `/=`, `<`, `>`, `<=`, `>=` | R op R, R op I, I op R |
+
+## Type-bound procedures
+
+| Call | Result |
+|---|---|
+| `r%get_num()` E | `int64` numerator |
+| `r%get_den()` E | `int64` denominator, > 0 |
+| `r%is_integer()` E | logical: den = 1 |
+| `r%inverse()` E | 1/r; stops if r = 0 |
+| `call r%simplify()` E | reduces to lowest terms with den > 0; every value the library returns already is, so this is a no-op on them |
+| `write_formatted`, `read_formatted` | the bindings behind `write(formatted)` and `read(formatted)`; see Text I/O |
+
+## Functions
+
+E = elemental. Arguments `a`, `b`, `r` are rational unless stated.
+
+| Function | Returns |
+|---|---|
+| `char(r)` E | `character(41)`: `"n/d"`, or `"n"` if den = 1, left-justified; use `trim(char(r))` |
+| `int(r)` E | `int32`, truncated toward zero like the intrinsic; stops if it does not fit |
+| `real(r)` E | `real64`, nearest |
+| `floor(r)`, `ceiling(r)` E | `int64` |
+| `trunc(r)` E | `int64`, toward zero |
+| `round(r)` E | `int64`, nearest, ties away from zero |
+| `abs(r)` E | rational |
+| `sign(a, b)` E | \|a\| with the sign of b; b = 0 counts as positive, like the intrinsic |
+| `min(a, b)`, `max(a, b)` E | rational; two arguments only |
+| `compare(a, b)` E | integer -1, 0 or 1 for a < b, a = b, a > b |
+| `mod(a, b)` E | a - trunc(a/b)*b; sign of a, like the intrinsic |
+| `call divmod(a, b, q, r)` E | `q` (`int64`) = trunc(a/b) and `r` = a - q*b |
+| `gcf(m, n)` E | greatest common factor, >= 0, of two `int32` (result `int32`) or two `int64` (result `int64`); gcf(0, n) = \|n\| |
+| `gcf(a, b)` E | rational: gcf of the numerators over lcm of the denominators, the largest rational that divides a and b an integer number of times; 0 if a or b is 0 |
+| `lcm(m, n)` E | least common multiple, >= 0, of two `int32` or two `int64`; 0 if either is 0 |
+| `sum(v)`, `product(v)` | rational; `v(:)` rank 1 only, no `dim` or `mask`; empty sum 0, empty product 1 |
+| `dot_product(u, v)` | rational; `u(:)`, `v(:)` of equal size, no conjugation |
+| `matmul(a, b)` | `a(:,:)` times `b(:,:)` or `b(:)`; there is no vector-matrix form |
+| `transpose(a)` | `a(:,:)` |
+| `call random_number(r)` E | impure: r = nint(x*order)/order with x from the intrinsic `random_number`, so r is in [0, 1] and its denominator divides `order` |
+| `call set_order(n)` | sets `order` (`int32`, n > 0, default 10) for `random_number` |
+
+## Text I/O
+
+- `write(u, '(dt)') r` writes `trim(char(r))`. `print *, r` and `write(u, *) r` write a blank first, so list-directed items stay separated on every compiler.
+- `read(u, '(dt)') r` or `read(u, *) r`: skips blanks and commas, then reads one token up to the next blank, comma or end of record, and parses it like `rational(str)`. A token that is not a rational gives `iostat > 0`.
+- Portable input: read a line into a character variable and use `rational(str)`. Derived-type reads at the end of a record and list-directed derived-type reads differ between compilers (see Compiler notes).
+- Character variables: use `char(r)` and `rational(str)` rather than internal `write`/`read`.
+
+## Compiler notes
+
+Tested in CI with gfortran 13 and 14 (Linux, macOS, Windows), ifx 2026 (Linux, Windows), LLVM flang 21 and nvfortran 26 (Linux).
+- nvfortran 26.3: list-directed `read(u, *) r` fails (end-of-file iostat, nothing read); `read(u, '(dt)') r` works.
+- ifx 2026.1: a `'(dt)'` read whose token ends the record returns an end-of-record iostat, although the value is read. List-directed output puts no blank between a rational and a following non-rational item (`print *, r, 'x'` gives `1/2x`).
+- gfortran: a derived-type read whose token ends the record also consumes the following record, so the next `read` statement skips a line. libgfortran also leaks a little memory on that path, which LeakSanitizer reports in debug builds.
+
+## Differs from
+
+- Intrinsic numeric types: no kind parameter and no mixed-kind promotion; operators accept `int32` only, and reals never mix with rationals in an operator. `sum`, `product`, `min`, `max` and `matmul` support only the forms listed above.
+- Python `fractions.Fraction` and GMP `mpq_t` use arbitrary-precision integers. Here the parts are `int64`, and long computations can stop with `rational: integer overflow`. Julia `Rational{Int64}` is fixed-size too, but throws a catchable `OverflowError`.
+- art-rasa/rational_number and wayne-mj/fractions: functions such as `ratNumAdd` or `add_fraction` instead of operators, and no overflow checks in the former.
+
+## Module layout
+
+One module, `rationals`, in `src/rationals.f90`. The specific procedure names (such as `rat_add_rat`) are private; call them through the generic names.
+
+## Examples
+
+These are the programs in `example/`, compiled in CI.
+
+```fortran
+program demo_arithmetic
+  !! Construction, arithmetic, comparison, conversion and text output
+  use, intrinsic :: iso_fortran_env, only: dp => real64
+  use rationals
+  implicit none
+  type(rational) :: a, b, c
+
+  a = rational(2, 3)                         ! 2/3
+  b = rational("3/4")                        ! 3/4; also "-2" or "0.75"
+  c = rational(0.75_dp)                      ! 3/4: simplest fraction equal to the real
+  print '(a)', trim(char(rational(6, -4)))   ! -3/2: lowest terms, positive denominator
+
+  print *, a + b, a - b, a*b, a/b            ! 17/12 -1/12 1/2 8/9
+  print *, a**(-2), 1 - a, b == c            ! 9/4 1/3 T
+  print *, a < b, compare(b, a), max(a, b)   ! T 1 3/4
+
+  print *, real(a), int(rational(-7, 2))     ! 0.66666666666666663 -3
+  print *, floor(rational(-7, 2)), round(rational(5, 2))   ! -4 3
+  print *, b%get_num(), b%get_den(), a%is_integer()        ! 3 4 F
+
+  print *, sum([a, b, c]), product([a, b, c])              ! 13/6 3/8
+  print *, mod(rational(7, 3), rational(1, 2))             ! 1/3
+  write(*, '(a, dt)') 'a = ', a              ! a = 2/3
+end program demo_arithmetic
+```
+
+```fortran
+program demo_approximation
+  !! Rational approximations: pi from its decimal digits, sqrt(2) from a continued fraction
+  use, intrinsic :: iso_fortran_env, only: dp => real64, int64
+  use rationals
+  implicit none
+  real(dp), parameter :: pi = acos(-1._dp)
+  type(rational) :: r
+  integer :: i
+
+  r = pi                                     ! simplest fraction that converts back to pi
+  print *, r                                 ! 245850922/78256779
+  print *, real(r) == pi                     ! T
+
+  do i = 1, 6                                ! truncated decimals, in lowest terms
+    print *, rational(int(pi*10**i, int64), 10_int64**i)   ! 31/10 157/50 ... 392699/125000
+  end do
+
+  r = 1                                      ! sqrt(2) = 1 + 1/(2 + 1/(2 + ...))
+  do i = 1, 6
+    r = 1 + 1/(1 + r)                        ! 3/2 7/5 17/12 41/29 99/70 239/169
+    print *, r, real(r*r) - 2                ! error shrinks about 6 times per step
+  end do
+end program demo_approximation
+```

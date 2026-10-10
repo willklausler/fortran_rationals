@@ -1,134 +1,100 @@
 # fortran_rationals
 
 [![CI](https://github.com/willklausler/fortran_rationals/actions/workflows/ci.yml/badge.svg)](https://github.com/willklausler/fortran_rationals/actions/workflows/ci.yml)
+[![Docs](https://github.com/willklausler/fortran_rationals/actions/workflows/docs.yml/badge.svg)](https://willklausler.github.io/fortran_rationals/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Rational numbers for exact computation, packaged as one derived type,
-`rational`, with the arithmetic operators and the numeric intrinsics
-overloaded.
+Exact rational numbers for modern Fortran: one derived type, `rational`, with
+the arithmetic operators and the numeric intrinsics overloaded. Overflow stops
+the program instead of returning a wrong answer.
 
-- 64-bit numerator and denominator, always in lowest terms
-- Checked arithmetic: overflow stops with an error, never a wrong answer
-- Conversion from reals to the simplest equal fraction, and from text
-- `sum`, `product`, `dot_product`, `matmul`, `transpose`, `abs`, `min`,
-  `max`, `floor`, `ceiling`, `mod` and more work on rationals
-- Elemental procedures, no dependencies, Fortran 2018, fpm and make builds
+```fortran
+use, intrinsic :: iso_fortran_env, only: dp => real64
+use rationals
+type(rational) :: a, b
+
+a = rational(2, 3)                        ! 2/3
+b = rational("3/4") + 1                   ! 7/4
+print *, a + b, a*b, a < b                ! 29/12  7/6  T
+print *, rational(0.1_dp), real(a)        ! 1/10  0.66666666666666663
+print *, sum([a, b, a]), floor(-b)        ! 37/12  -2
+```
+
+> Coding agents: the complete API reference is [llms.txt](llms.txt), and
+> contributor instructions are in [AGENTS.md](AGENTS.md).
+
+## Features
+
+- Type `rational` with an `int64` numerator and denominator, always in lowest terms.
+- Operators `+ - * / ** == /= < > <= >=` between rationals and `int32` integers; exact `==`.
+- Checked arithmetic: overflow, division by zero and bad text stop with a message. Addition and multiplication cancel common factors first, and comparison never overflows.
+- Conversion from reals to the simplest equal fraction, from text, and back with `real`, `int` and `char`.
+- `abs`, `sign`, `min`, `max`, `mod`, `floor`, `ceiling`, `sum`, `product`, `dot_product`, `matmul`, `transpose` and `random_number` work on rationals; also `trunc`, `round`, `compare`, `divmod`, `gcf`, `lcm`.
+- Elemental procedures, text I/O with `print *` and `'(dt)'`, no dependencies.
+
+Conventions: the components are private (`get_num`, `get_den`), the denominator is positive, and errors stop the program.
 
 ## Installation
 
-Add the package to your `fpm.toml`:
+With [fpm](https://fpm.fortran-lang.org) 0.13 or later, add to your `fpm.toml`:
 
 ```toml
 [dependencies]
 fortran_rationals = { git = "https://github.com/willklausler/fortran_rationals" }
 ```
 
-Without fpm, `make && make install PREFIX=...` builds and installs the library,
-the module file and a pkg-config file. Or compile the single source file
-`src/rationals.f90` with your project.
-
-## Quick start
-
-```fortran
-use rationals, only: rational, operator(+), operator(-), operator(/), operator(<), &
-                     assignment(=)
-
-type(rational) :: a, b, c
-
-a = rational(2, 3)       ! 2/3
-b = rational("3/4")      ! 3/4
-c = rational(0.75d0)     ! 3/4, the simplest fraction equal to the real
-a = 2                    ! 2
-
-write(*,*) a%is_integer()                       ! T
-if (rational(5,8) < rational(8,13)) then
-  write(*,*) rational(8,13) - rational(5,8)
-else
-  write(*,*) (rational(8,13) + rational(5,8))/21 ! 43/728
-end if
-```
-
-The runnable example, rational approximations of π and √2, is
-[example/rationals_example.f90](example/rationals_example.f90):
+With make, which builds `build/make/libfortran_rationals.a` and the module file:
 
 ```sh
-fpm run --example
+make FC=gfortran && make test
+make install PREFIX=$HOME/.local    # library, .mod file and man page
 ```
 
-## API
+## Documentation
 
-| Entity | Description |
-| --- | --- |
-| `rational(n, d)` | Constructor from `int32` or `int64` numerator and denominator |
-| `rational(n)`, `rational(x)`, `rational(str)` | From an `int32`, a `real64`, or text `"n"`, `"n/d"`, `"0.75"` |
-| `r = n`, `r = x` | Assignment from `int32` or `real64` |
-| `+ - * / **` | Arithmetic with rationals and `int32`; `**` takes an `int32` exponent |
-| `== /= < > <= >=` | Comparison with rationals and `int32` |
-| `r%get_num()`, `r%get_den()` | Numerator and denominator, `int64` |
-| `r%is_integer()` | `.true.` if the denominator is 1 |
-| `r%inverse()` | Reciprocal |
-| `char(r)`, `int(r)`, `real(r)` | Text `"n/d"` or `"n"`; `int32` truncated toward zero; `real64` |
-| `floor`, `ceiling`, `trunc`, `round` | Integer part, `int64`; `round` ties away from zero |
-| `abs`, `sign`, `min`, `max`, `mod` | As the intrinsics |
-| `call divmod(a, b, q, r)` | Truncated quotient `q` (`int64`) and remainder `r` |
-| `compare(a, b)` | -1, 0 or 1 |
-| `gcf`, `lcm` | Greatest common factor and least common multiple of integers; `gcf` of rationals |
-| `sum`, `product`, `dot_product`, `matmul`, `transpose` | On rational arrays |
-| `random_number(r)` | Random rational in [0, 1] with denominator dividing `set_order(n)`, default 10 |
-| `write(*,*) r`, `write(*,"(DT)") r` | Same text as `char(r)` |
+- [User manual and API documentation](https://willklausler.github.io/fortran_rationals/), generated with FORD (`make doc`)
+- [llms.txt](llms.txt): the API reference as one plain-text file, also the manual's source
+- `man 3 rationals` after `make install` ([man/rationals.3](man/rationals.3))
+- Example programs in [example/](example/) (`fpm run --example --all`) and an app in [app/](app/) (`fpm run`) that inverts Hilbert matrices exactly and shows how far double precision drifts
 
-Overflow, division by zero and unparsable text stop with `error stop` and a
-message. The module does not export kind parameters; take `int32`, `int64`
-and `real64` from `iso_fortran_env`.
+## Compilers
 
-## Limitations
+CI tests every push on:
 
-- **Range.** Numerator and denominator are `int64`. Repeated sums and products
-  grow denominators quickly, so long computations, for example Gaussian
-  elimination on larger matrices, can exceed this range and stop with
-  `rational: integer overflow`. There is no arbitrary-precision fallback.
-- **Errors stop the program.** They cannot be caught.
-- **Integer kinds.** Mixed rational-integer operators take `int32`. Construct
-  `int64` values with `rational(n, d)`.
-- **Reals.** `0.1d0` becomes `1/10`, the simplest fraction equal to that real,
-  which is not always the value intended.
-- **Formatted input.** `read` with `DT` or list-directed formatting works for
-  values in the middle of a record, but compilers differ at the end of a
-  record: gfortran skips the next record, ifx reports end-of-record for `(DT)`,
-  and nvfortran fails. For portable input, read a line into a character
-  variable and use `rational(str)`.
+| Compiler | Linux | macOS | Windows |
+| --- | --- | --- | --- |
+| gfortran 13, 14 | yes | yes | yes |
+| ifx 2026 | yes | | yes |
+| LLVM flang 21 | yes | | |
+| nvfortran 26 | yes | | |
 
-## Building, testing and documentation
+Known compiler limitations, mostly in derived-type input, are listed in [llms.txt](llms.txt#compiler-notes).
 
-```sh
-fpm test --profile debug     # bounds checks, sanitizers, FP traps
-fpm test --profile release
-fpm run --example
-make test                    # without fpm
-ford ford.md                 # API documentation in docs/
-```
+## Why another rational package?
 
-The unit tests check every constructor, conversion, operator and overloaded
-intrinsic against hand-computed results, and regression cases near the
-`int64` limit. CI runs gfortran 13–15, Intel ifx and NVIDIA nvfortran on
-Linux, gfortran on macOS and Windows, the make build and the documentation
-build, and publishes the [documentation](https://willklausler.github.io/fortran_rationals/)
-to GitHub Pages from `main`.
-
-## Pedigree and support
-
-Addition and multiplication follow Knuth's algorithms for fractions [1].
-Every procedure is verified by the tests described above. The code has not
-been independently reviewed. It is maintained by the author on a best-effort
-basis.
-
-Please report bugs and request features through
-[GitHub issues](https://github.com/willklausler/fortran_rationals/issues).
-Pull requests are welcome; please include a test.
+Two other Fortran rational-number modules exist on GitHub.
+[art-rasa/rational_number](https://github.com/art-rasa/rational_number) has
+addition and subtraction only, through function calls, with no overflow
+detection and no license.
+[wayne-mj/fractions](https://github.com/wayne-mj/fractions) is a fraction
+calculator with functions such as `add_fraction` and a decimal-places
+approximation for reals, but no operators. This package makes a rational
+behave like a numeric type: operators, comparisons, the numeric and array
+intrinsics, exact conversion from reals, and overflow checks on every
+operation, packaged for fpm and tested on four compilers.
 
 ## References
 
-1. Knuth, D. E. (1997). *The Art of Computer Programming*, Vol. 2: *Seminumerical Algorithms*, 3rd ed., §4.5.1 and §4.5.3. Addison-Wesley.
+- D. E. Knuth, *The Art of Computer Programming*, Vol. 2: *Seminumerical Algorithms*, 3rd ed., §4.5.1 (fractions) and §4.5.3 (continued fractions), Addison-Wesley, 1997.
+
+## Status and support
+
+Version 0.2.0. The API may still change before 1.0; changes are recorded in
+[CHANGELOG.md](CHANGELOG.md). Bug reports, questions and pull requests are
+welcome on [GitHub](https://github.com/willklausler/fortran_rationals/issues);
+see [CONTRIBUTING.md](CONTRIBUTING.md). To cite this package, use
+[CITATION.cff](CITATION.cff).
 
 ## License
 
-[MIT](LICENSE) © 2025-2026 Will Klausler
+[MIT](LICENSE)

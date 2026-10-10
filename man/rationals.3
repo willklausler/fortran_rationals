@@ -1,0 +1,105 @@
+.TH RATIONALS 3 "2026-10-10" "fortran_rationals 0.2.0" "Fortran Library Functions"
+.SH NAME
+rationals \- exact rational numbers with checked 64-bit arithmetic
+.SH SYNOPSIS
+.nf
+.B use rationals
+.B type(rational) :: r
+.fi
+.SH DESCRIPTION
+Module
+.B rationals
+provides the derived type
+.BR rational ,
+a fraction num/den with int64 parts, always in lowest terms with den > 0.
+The components are private.
+.PP
+Construct with
+.BR rational ( n ", " d )
+(both int32 or both int64),
+.BR rational ( n )
+(int32),
+.BR rational ( x )
+(real64: the simplest fraction that converts back to exactly x),
+or
+.BR rational ( \(dq3/4\(dq )
+(text "n", "n/d" or a decimal real).
+Assignment from a rational, an int32 or a real64 also works.
+.SS Operators
+.B + \- * / ** == /= < > <= >=
+between rationals and int32 integers;
+.B **
+takes an int32 exponent.
+All are elemental.
+.B ==
+is exact.
+Comparisons never overflow.
+.SS Type-bound procedures
+.TP
+.BR r%get_num "(), " r%get_den ()
+Numerator and denominator, int64.
+.TP
+.BR r%is_integer "(), " r%inverse "(), " "call r%simplify" ()
+den = 1; reciprocal; reduce to lowest terms (a no-op on library results).
+.SS Functions
+All elemental except the array functions.
+.TP
+.BR char ( r "), " int ( r "), " real ( r )
+Text "n/d" or "n" (character(41), left-justified); int32 truncated toward zero; real64.
+.TP
+.BR floor ", " ceiling ", " trunc ", " round
+int64; round goes half away from zero.
+.TP
+.BR abs ", " sign ( a ", " b "), " min ( a ", " b "), " max ( a ", " b )
+As the intrinsics, for two rationals.
+.TP
+.BR mod ( a ", " b "), " "call divmod" ( a ", " b ", " q ", " r )
+a \- trunc(a/b)*b; quotient q (int64) and remainder r together.
+.TP
+.BR compare ( a ", " b )
+\-1, 0 or 1.
+.TP
+.BR gcf ( a ", " b "), " lcm ( a ", " b )
+Greatest common factor and least common multiple of two int32 or two int64
+integers; gcf also of two rationals.
+.TP
+.BR sum ( v "), " product ( v "), " dot_product ( u ", " v "), " matmul ( a ", " b "), " transpose ( a )
+Rank-1 sum and product; matrix-matrix and matrix-vector products.
+.TP
+.BR "call random_number" ( r "), " "call set_order" ( n )
+Random rational in [0, 1] whose denominator divides n (default 10).
+.SS Input and output
+.B print *, r
+and
+.B write(u, \(aq(dt)\(aq) r
+write the same text as
+.BR trim(char(r)) ;
+list-directed output starts with a blank.
+.B read(u, \(aq(dt)\(aq) r
+reads one token delimited by blanks, commas or the end of the record.
+.SH NOTES
+Integer overflow, division by zero, unparsable text and reals out of the
+int64 range stop the program with
+.B error stop
+and a message such as "rational: integer overflow".
+Errors cannot be caught. A failed derived-type read returns iostat > 0.
+.PP
+Long computations grow denominators quickly; there is no arbitrary-precision
+fallback.
+.PP
+.B random_number
+uses module state set by
+.BR set_order ;
+it is not thread safe.
+.SH EXAMPLE
+.nf
+use rationals
+type(rational) :: a
+a = rational(2, 3) + rational(\(dq3/4\(dq)
+print *, a, real(a)        ! 17/12  1.4166666666666667
+.fi
+.SH SEE ALSO
+The complete reference is llms.txt in the source distribution and
+https://willklausler.github.io/fortran_rationals/
+.SH AUTHOR
+Will Klausler

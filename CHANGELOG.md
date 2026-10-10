@@ -1,14 +1,19 @@
-## GPF Changelog
+# Changelog
 
-The intent of this changelog is to keep everyone in the loop about
-what's new in the **fortran_rationals**  project. It is a curated,
-chronologically ordered list of notable changes including records
-of change such as bug fixes, new features, changes, and relevant
-notifications.
+All notable changes are listed here. The project follows [Semantic Versioning](https://semver.org).
 
----
-**2025-09-04**  Will  Klausler  <https://github.com/willklausler/fortran_rationals>
+## [0.2.0] - 2026-10-10
 
-### :green_circle: ADD:
-     initial release
----
+- List-directed output of a rational starts with a blank, so `print *, a, b` separates the values on ifx and nvfortran too.
+- `rational(str)` is elemental instead of impure elemental.
+- Error messages start with the public generic name (`gcf:`, `lcm:`, `int:`, `matmul:`, `dot_product:`).
+- New layout following the maintainer's package standard: `llms.txt` API reference, man page, `AGENTS.md`, `CITATION.cff`, `CONTRIBUTING.md`, two example programs and an app.
+- fpm profiles with per-compiler flags; the make build installs the man page and no longer writes a pkg-config file or has `uninstall` and `example` targets.
+- CI adds ifx on Windows and LLVM flang; documentation is deployed by a separate workflow.
+
+## [0.1.0] - 2025-09-04
+
+First public release.
+
+- Type `rational` with `int64` numerator and denominator in lowest terms, and checked arithmetic that stops on overflow.
+- Constructors from integers, reals and text; operators with rationals and `int32`; overloaded numeric and array intrinsics; `gcf`, `lcm`, `compare`, `divmod`, `random_number`.
