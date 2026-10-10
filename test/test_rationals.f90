@@ -92,6 +92,10 @@ program test_rationals
   call check(a%get_num() == 1 .and. a%get_den() == 2, 'a = 0.5 gives 1/2')
   b = a
   call check(b%get_num() == a%get_num() .and. b%get_den() == a%get_den(), 'b = a copies')
+  u2 = [rational(1, 2), rational(1, 3)]
+  u2 = u2 - u2(1)*u2
+  call check(all(u2 == [rational(1, 4), rational(1, 6)]), &
+    'array assignment that reads its own elements')
 
   ! Conversions --------------------------------------------------------
   a = 2

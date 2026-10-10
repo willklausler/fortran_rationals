@@ -73,9 +73,11 @@ module rationals
     generic   :: read(formatted) => read_formatted
   end type rational
 
+  ! rational = rational is intrinsic assignment: nvfortran 26.3 passes an
+  ! overlapping right-hand side to an elemental defined assignment without a copy
   interface assignment(=)
-  !! Assign a rational, integer, or real to a rational
-    procedure :: rat_set_rat, rat_set_int, rat_set_real
+  !! Assign an int32 or a real64 to a rational
+    procedure :: rat_set_int, rat_set_real
   end interface assignment(=)
 
   interface operator(+)
@@ -520,14 +522,6 @@ end function rat_real
 !-----------------------------------------------------------------------
 ! Assignment
 !-----------------------------------------------------------------------
-
-elemental subroutine rat_set_rat(self,b)
-  !! Set rational = rational
-  type(rational), intent(out) :: self
-  type(rational), intent(in) :: b
-  self%num = b%num
-  self%den = b%den
-end subroutine rat_set_rat
 
 elemental subroutine rat_set_int(self,b)
   !! Set rational = integer

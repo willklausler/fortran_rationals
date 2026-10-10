@@ -59,6 +59,7 @@ examples and the app run, and `tools/check_docs.py` passes.
 
 ## Compiler quirks that shaped the code
 
+- nvfortran 26.3 passes an overlapping right-hand side to an elemental defined assignment without a copy (`a(2,:) = a(2,:) - a(2,1)*a(1,:)` gave 0/0): rational = rational is intrinsic assignment, so `assignment(=)` covers only `int32` and `real64`.
 - ifx 2026.1 and nvfortran 26.3 write list-directed derived-type items with no separator: `write_formatted` starts list-directed output with a blank.
 - nvfortran 26.3: list-directed derived-type `read` fails; the test reads with `'(dt, dt)'`.
 - ifx 2026.1 writes no blank between a list-directed rational and a following character item; the test writes `' end'`.

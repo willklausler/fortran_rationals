@@ -4,6 +4,7 @@ All notable changes are listed here. The project follows [Semantic Versioning](h
 
 ## [0.2.0] - 2026-10-10
 
+- Fixed wrong results on nvfortran when an array assignment reads its own elements, such as a row update in Gaussian elimination: rational = rational is now intrinsic assignment.
 - List-directed output of a rational starts with a blank, so `print *, a, b` separates the values on ifx and nvfortran too.
 - `rational(str)` is elemental instead of impure elemental.
 - Error messages start with the public generic name (`gcf:`, `lcm:`, `int:`, `matmul:`, `dot_product:`).
