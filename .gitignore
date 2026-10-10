@@ -1,4 +1,4 @@
 build/
-docs/
-CLAUDE.md
+bin/
+CLAUDE.local.md
 .claude/settings.local.json
