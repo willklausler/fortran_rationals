@@ -10,7 +10,7 @@ for FC in gfortran ifx nvfortran flang flang-new; do
     command -v "$FC" > /dev/null || continue
     for PROFILE in debug release; do
         echo "--- $FC $PROFILE"
-        if fpm test --compiler "$FC" --profile "$PROFILE" && fpm run --compiler "$FC" --profile "$PROFILE" --example --all > /dev/null; then
+        if fpm test --compiler "$FC" --profile "$PROFILE" && fpm run --compiler "$FC" --profile "$PROFILE" --example --all > /dev/null && fpm run --compiler "$FC" --profile "$PROFILE" > /dev/null; then
             echo "✅ $FC $PROFILE"
         else
             FAILED+=("$FC $PROFILE")
