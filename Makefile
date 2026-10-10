@@ -1,80 +1,53 @@
-# Build, test and install fortran_rationals without fpm.
-#
-#   make                  build the static library
-#   make test             build and run the unit tests
-#   make example          build and run the example
-#   make install          install library, module and pkg-config file
-#   make uninstall        remove the installed files
-#   make clean            remove the build directory
-#
-# Variables (override on the command line, e.g. `make FC=ifx FFLAGS=-O3`):
-#   FC, FFLAGS            compiler and flags (gfortran, ifx, nvfortran)
-#   PREFIX, DESTDIR       install location; DESTDIR stages a package
+# make(1) build, an alternative to fpm.
+#   make                  library, tests, examples and app
+#   make test             run the tests
+#   make FC=ifx FFLAGS=-O2
+#   make install PREFIX=$HOME/.local
+#   make doc              HTML documentation in build/doc (needs ford)
 
 ifeq ($(origin FC),default)
-  FC = gfortran
+FC = gfortran
 endif
-FFLAGS  ?= -O2
-PREFIX  ?= /usr/local
-LIBDIR  ?= $(PREFIX)/lib
-INCDIR  ?= $(PREFIX)/include
-BUILD   ?= build/make
-VERSION  = 0.1.0
+FFLAGS ?= -O2
+PREFIX ?= /usr/local
 
-ifneq (,$(findstring gfortran,$(FC)))
-  MODFLAG = -J
-else
-  MODFLAG = -module
-endif
+B := build/make
+LIB := $(B)/libfortran_rationals.a
+PROGS := $(B)/test_rationals $(B)/demo_arithmetic $(B)/demo_approximation $(B)/hilbert_inverse
 
-LIB  = $(BUILD)/libfortran_rationals.a
-OBJS = $(BUILD)/rationals.o
-MODS = $(BUILD)/rationals.mod
-PC   = $(BUILD)/fortran_rationals.pc
+.PHONY: all test install doc clean
 
-.PHONY: all test example install uninstall clean
+all: $(LIB) $(PROGS)
 
-all: $(LIB) $(PC)
+# Compiling inside $(B) puts the .mod files there for every compiler.
+$(LIB): src/rationals.f90
+	mkdir -p $(B)
+	cd $(B) && $(FC) $(FFLAGS) -c $(CURDIR)/$< -o rationals.o
+	ar rcs $@ $(B)/rationals.o
 
-$(BUILD):
-	mkdir -p $@
+LINK = $(FC) $(FFLAGS) -I$(B) $< $(LIB) -o $@
+$(B)/test_rationals: test/test_rationals.f90 $(LIB)
+	$(LINK)
+$(B)/demo_%: example/demo_%.f90 $(LIB)
+	$(LINK)
+$(B)/hilbert_inverse: app/main.f90 $(LIB)
+	$(LINK)
 
-$(BUILD)/rationals.o: src/rationals.f90 | $(BUILD)
-	$(FC) $(FFLAGS) $(MODFLAG) $(BUILD) -c $< -o $@
-
-$(LIB): $(OBJS)
-	ar rcs $@ $^
-
-$(PC): Makefile | $(BUILD)
-	printf '%s\n' 'prefix=$(PREFIX)' 'libdir=$(LIBDIR)' 'includedir=$(INCDIR)' '' \
-	  'Name: fortran_rationals' \
-	  'Description: Rational number derived type with checked exact arithmetic' \
-	  'Version: $(VERSION)' \
-	  'Libs: -L$${libdir} -lfortran_rationals' \
-	  'Cflags: -I$${includedir}' > $@
-
-$(BUILD)/%: test/%.f90 $(LIB)
-	$(FC) $(FFLAGS) -I$(BUILD) $< $(LIB) -o $@
-
-$(BUILD)/%: example/%.f90 $(LIB)
-	$(FC) $(FFLAGS) -I$(BUILD) $< $(LIB) -o $@
-
-test: $(BUILD)/rationals_test
+test: $(B)/test_rationals
 	$<
 
-example: $(BUILD)/rationals_example
-	$<
+install: $(LIB)
+	install -d $(PREFIX)/lib $(PREFIX)/include $(PREFIX)/share/man/man3
+	install -m 644 $(LIB) $(PREFIX)/lib
+	install -m 644 $(B)/*.mod $(PREFIX)/include
+	install -m 644 man/rationals.3 $(PREFIX)/share/man/man3
 
-install: all
-	install -d $(DESTDIR)$(LIBDIR) $(DESTDIR)$(LIBDIR)/pkgconfig $(DESTDIR)$(INCDIR)
-	install -m 644 $(LIB) $(DESTDIR)$(LIBDIR)
-	install -m 644 $(MODS) $(DESTDIR)$(INCDIR)
-	install -m 644 $(PC) $(DESTDIR)$(LIBDIR)/pkgconfig
-
-uninstall:
-	rm -f $(DESTDIR)$(LIBDIR)/libfortran_rationals.a \
-	      $(DESTDIR)$(LIBDIR)/pkgconfig/fortran_rationals.pc \
-	      $(addprefix $(DESTDIR)$(INCDIR)/,$(notdir $(MODS)))
+# The user manual page is llms.txt, so there is one reference to maintain.
+doc:
+	mkdir -p build/pages
+	{ printf -- '---\ntitle: User manual\n---\n\n'; sed 1d llms.txt; } > build/pages/index.md
+	ford ford.md
+	cp llms.txt build/doc/
 
 clean:
-	rm -rf $(BUILD)
+	rm -rf $(B)
