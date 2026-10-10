@@ -1,376 +1,279 @@
-program rationals_test
-!! Unit tests for [[rationals]].
-!!
-!! Checks constructors, conversions, operators and the overloaded
-!! intrinsics against hand-computed results, and regression cases for
-!! overflow near the int64 limit, real conversion and sign handling.
-
+! SPDX-License-Identifier: MIT
+program test_rationals
+  !! Unit tests for every public procedure of module rationals, with
+  !! hand-computed results and regression cases near the int64 limit.
+  use, intrinsic :: iso_fortran_env, only: ir => int64, ik => int32, rk => real64
   use rationals
-  use iso_fortran_env, only: ir => int64, ik => int32, rk => real64
-
   implicit none
 
-  integer(ir), parameter :: yoog = huge(1_ir)   !! Largest int64
-  integer :: nfail = 0                          !! Number of failed checks
+  integer(ir), parameter :: yoog = huge(1_ir)
+  integer :: ncheck = 0, nfail = 0
+  integer :: u, ios
+  integer(ir) :: q
+  character(80) :: line
+  type(rational) :: a, b, c, r
+  type(rational) :: u2(2), v2(2), m(2,2), n(2,2), p(2,2), r23(2,3), v3(3), w(2), empty(0)
 
-  integer(ik) :: ord
-  type(rational) :: a, b
-  type(rational) :: u(2), v(2), m(2,2), n(2,2), p(2,2)
+  ! gcf and lcm --------------------------------------------------------
+  call check(gcf(0, 2) == 2, 'gcf(0, 2) = 2')
+  call check(gcf(2, 3) == 1, 'gcf(2, 3) = 1')
+  call check(gcf(12, 12) == 12, 'gcf(12, 12) = 12')
+  call check(gcf(3, 12) == 3, 'gcf(3, 12) = 3')
+  call check(gcf(-3, 12) == 3, 'gcf(-3, 12) = 3')
+  call check(gcf(12_ir, 18_ir) == 6_ir, 'gcf(12, 18) = 6 for int64')
+  call check(gcf(rational(1, 2), rational(3, 4)) == rational(1, 4), 'gcf(1/2, 3/4) = 1/4')
+  call check(gcf(rational(0), rational(3, 4)) == 0, 'gcf(0, 3/4) = 0')
+  call check(lcm(0, 1) == 0, 'lcm(0, 1) = 0')
+  call check(lcm(3, 3) == 3, 'lcm(3, 3) = 3')
+  call check(lcm(2, 3) == 6, 'lcm(2, 3) = 6')
+  call check(lcm(4, 6) == 12, 'lcm(4, 6) = 12')
+  call check(lcm(-4, 6) == 12, 'lcm(-4, 6) = 12')
+  call check(lcm(4_ir, 6_ir) == 12_ir, 'lcm(4, 6) = 12 for int64')
 
-  call section("Math")
-  call expect(gcf(0,2) == 2, "gcf failed for 0")
-  call expect(gcf(2,3) == 1, "gcf failed for coprime")
-  call expect(gcf(12,12) == 12, "gcf failed for equality")
-  call expect(gcf(3,12) == 3, "gcf failed for result")
-  call expect(gcf(-3,12) == 3, "gcf failed for negative input")
-  call expect(lcm(0, 1) == 0, "lcm failed for zero")
-  call expect(lcm(3, 3) == 3, "lcm failed for equality")
-  call expect(lcm(2, 3) == 6, "lcm failed for product result")
-  call expect(lcm(4, 6) == 12, "lcm failed for non-product result")
-  call expect(lcm(-4, 6) == 12, "lcm failed for negative")
-
-  call section("Constructor")
+  ! Constructors and accessors -----------------------------------------
   a = rational(1, 1)
-  call expect(a%get_num() == 1 .and. a%get_den() == 1, "Default constructor failed")
+  call check(a%get_num() == 1 .and. a%get_den() == 1, 'rational(1, 1) = 1/1')
   a = rational(3)
-  call expect(a%get_num() == 3 .and. a%get_den() == 1, "Integer constructor failed")
+  call check(a%get_num() == 3 .and. a%get_den() == 1, 'rational(3) = 3/1')
   a = rational(0.5_rk)
-  call expect(a%get_num() == 1 .and. a%get_den() == 2, "Real constructor failed")
-  a = rational("1/2")
-  call expect(a%get_num() == 1 .and. a%get_den() == 2, "Character constructor failed")
+  call check(a%get_num() == 1 .and. a%get_den() == 2, 'rational(0.5) = 1/2')
+  a = rational('1/2')
+  call check(a%get_num() == 1 .and. a%get_den() == 2, 'rational("1/2") = 1/2')
+  a = rational(6, -4)
+  call check(a%get_num() == -3 .and. a%get_den() == 2, 'rational(6, -4) = -3/2, lowest terms')
+  a = rational(4_ir, 6_ir)
+  call check(a%get_num() == 2 .and. a%get_den() == 3, 'rational(4, 6) = 2/3 for int64')
+  a = rational(0, -5)
+  call check(a%get_num() == 0 .and. a%get_den() == 1, 'rational(0, -5) = 0/1')
+  call a%simplify()
+  call check(a%get_num() == 0 .and. a%get_den() == 1, 'simplify keeps 0/1')
+  a = rational(-2, 3)
+  call a%simplify()
+  call check(a == rational(-2, 3), 'simplify keeps a value in lowest terms')
 
-  call section("Text round-trip")
-  !! write(DT) emits char(); formatted DT input is compiler dependent
+  ! Text ---------------------------------------------------------------
   a = rational(-7_ik, 12_ik)
-  call expect(rational(trim(char(a))) == a, "Text round-trip: value changed through char/parse")
-  call expect(char(rational(-3_ik)) == "-3", "char failed for integer")
-
-  call section("Assignment")
-  a = 2
-  call expect(a%get_num() == 2 .and. a%get_den() == 1, "Integer assignment failed")
+  call check(rational(trim(char(a))) == a, 'rational(char(-7/12)) = -7/12')
+  call check(char(rational(-3_ik)) == '-3', 'char(-3) = "-3"')
   a = 0.5_rk
-  call expect(a%get_num() == 1 .and. a%get_den() == 2, "Real assignment failed")
-  ! a = "1/2"   !! Not supported by Fortran
+  call check(trim(char(a)) == '1/2', 'char(1/2) = "1/2"')
+  call check(rational(' -2 ') == -2, 'rational(" -2 ") = -2')
+  call check(rational('1e-3') == rational(1, 1000), 'rational("1e-3") = 1/1000')
+  open(newunit=u, status='scratch')
+  write(u, '(dt, 1x, dt, a)') rational(1, 2), rational(-3, 4), ' end'
+  rewind(u)
+  read(u, '(a)') line
+  close(u)
+  call check(line == '1/2 -3/4 end', 'write(dt) gives char() text')
+  open(newunit=u, status='scratch')
+  write(u, '(a)') '1/2 -3/4 end'
+  rewind(u)
+  ! nvfortran 26.3 fails list-directed derived-type reads, so read with dt
+  read(u, '(dt, dt)') a, b
+  close(u)
+  call check(a == rational(1, 2) .and. b == rational(-3, 4), 'read(dt) of 1/2 -3/4')
+  open(newunit=u, status='scratch')
+  write(u, '(a)') 'x/y end'
+  rewind(u)
+  read(u, *, iostat=ios) a
+  close(u)
+  call check(ios > 0, 'read of x/y is an error')
+
+  ! Assignment ---------------------------------------------------------
+  a = 2
+  call check(a%get_num() == 2 .and. a%get_den() == 1, 'a = 2 gives 2/1')
+  a = 0.5_rk
+  call check(a%get_num() == 1 .and. a%get_den() == 2, 'a = 0.5 gives 1/2')
   b = a
-  call expect(b%get_num() == a%get_num() .and. b%get_den() == a%get_den(), "Copying failed")
+  call check(b%get_num() == a%get_num() .and. b%get_den() == a%get_den(), 'b = a copies')
 
-  call section("Casting")
+  ! Conversions --------------------------------------------------------
   a = 2
-  call expect(int(a) == 2, "Casting to integer failed")
+  call check(int(a) == 2, 'int(2) = 2')
   a = 0.5_rk
-  call expect(real(a) == 0.5_rk, "Casting to real failed")
-  call expect(trim(char(a)) == "1/2", "Casting to character failed")
+  call check(real(a) == 0.5_rk, 'real(1/2) = 0.5')
+  call check(int(rational(7_ik, 2_ik)) == 3, 'int(7/2) = 3')
+  call check(int(rational(-7_ik, 2_ik)) == -3, 'int(-7/2) = -3, truncated')
+  call check(rational(1.0_rk/3) == rational(1_ik, 3_ik), 'rational(1._dp/3) = 1/3')
+  call check(rational(1.0e5_rk) == 100000, 'rational(1e5) = 100000')
+  call check(rational(-2.5_rk) == rational(-5_ik, 2_ik), 'rational(-2.5) = -5/2')
+  call check(rational('0.75') == rational(3_ik, 4_ik), 'rational("0.75") = 3/4')
 
-  call section("Equality")
+  ! Comparison ---------------------------------------------------------
   a = 2
   b = 2
-  call expect(a == b, "Rational-rational equality failed")
-  call expect(a == 2, "Rational-integer equality failed")
-  call expect(2 == a, "Integer-rational equality failed")
-
-  call section("Inequality")
-  a = 2
+  call check(a == b, 'rational == rational')
+  call check(a == 2, 'rational == integer')
+  call check(2 == a, 'integer == rational')
   b = 3
-  call expect(a /= b, "Rational-rational inequality failed")
-  call expect(a /= 3, "Rational-integer inequality failed")
-  call expect(3 /= a, "Integer-rational inequality failed")
+  call check(a /= b, 'rational /= rational')
+  call check(a /= 3, 'rational /= integer')
+  call check(3 /= a, 'integer /= rational')
+  a = rational(3, 2)
+  b = rational(2, 3)
+  call check(a > b, '3/2 > 2/3')
+  call check(a > 1, '3/2 > 1')
+  call check(2 > a, '2 > 3/2')
+  call check(a >= b, '3/2 >= 2/3')
+  call check(a >= 1, '3/2 >= 1')
+  call check(2 >= a, '2 >= 3/2')
+  call check(b < a, '2/3 < 3/2')
+  call check(b < 1, '2/3 < 1')
+  call check(0 < b, '0 < 2/3')
+  call check(b <= a, '2/3 <= 3/2')
+  call check(b <= 1, '2/3 <= 1')
+  call check(0 <= b, '0 <= 2/3')
+  call check(compare(b, a) == -1, 'compare(2/3, 3/2) = -1')
+  call check(compare(a, b) == 1, 'compare(3/2, 2/3) = 1')
+  call check(compare(b, b) == 0, 'compare(2/3, 2/3) = 0')
+  call check(compare(rational(2_ik, 4_ik), rational(1_ik, 2_ik)) == 0, 'compare(2/4, 1/2) = 0')
+  a = rational(yoog - 1, yoog)
+  b = rational(yoog - 2, yoog - 1)
+  call check(a > b, 'comparison near the int64 limit')
+  call check(-a < -b, 'negative comparison near the int64 limit')
 
-  call section("Strict superiority")
-  a = rational(3,2)
-  b = rational(2,3)
-  call expect(a > b, "Rational-rational strict superiority failed")
-  call expect(a > 1, "Rational-integer strict superiority failed")
-  call expect(2 > a, "Integer-rational strict superiority failed")
-
-  call section("Strict inferiority")
-  a = rational(2,3)
-  b = rational(3,2)
-  call expect(a < b, "Rational-rational strict inferiority failed")
-  call expect(a < 1, "Rational-integer strict inferiority failed")
-  call expect(0 < a, "Integer-rational strict inferiority failed")
-
-  call section("Superiority")
-  a = rational(3,2)
-  b = rational(2,3)
-  call expect(a >= b, "Rational-rational superiority failed")
-  call expect(a >= 1, "Rational-integer superiority failed")
-  call expect(2 >= a, "Integer-rational superiority failed")
-
-  call section("Inferiority")
-  a = rational(2,3)
-  b = rational(3,2)
-  call expect(a <= b, "Rational-rational inferiority failed")
-  call expect(a <= 1, "Rational-integer inferiority failed")
-  call expect(0 <= a, "Integer-rational inferiority failed")
-
-  call section("Addition")
-  a = rational(2,3)
-  b = rational(3,2)
-  call expect(a + b == rational(13, 6), "Rational-rational addition failed")
-  call expect(a + 1 == rational(5, 3), "Rational-integer addition failed")
-  call expect(1 + a == rational(5, 3), "Integer-rational addition failed")
-
-  call section("Subtraction")
-  a = rational(2,3)
-  b = rational(3,2)
-  call expect(a - b == rational(-5, 6), "Rational-rational subtraction failed")
-  call expect(a - 1 == rational(-1, 3), "Rational-integer subtraction failed")
-  call expect(1 - a == rational(1, 3), "Integer-rational subtraction failed")
-
-  call section("Multiplication")
-  a = rational(2,3)
-  b = rational(3,2)
-  call expect(a*b == rational(1, 1), "Rational-rational multiplication failed")
-  call expect(a*2 == rational(4, 3), "Rational-integer multiplication failed")
-  call expect(2*a == rational(4, 3), "Integer-rational multiplication failed")
-
-  call section("Division")
-  a = rational(2,3)
-  b = rational(3,2)
-  call expect(a/b == rational(4, 9), "Rational-rational division failed")
-  call expect(a/2 == rational(1, 3), "Rational-integer division failed")
-  call expect(2/a == rational(3, 1), "Integer-rational division failed")
-
-  call section("Reciprocal")
-  a = rational(2,3)
-  call expect(a%inverse() == 1/a, "Reciprocation failed")
-
-  call section("Exponentiation")
-  a = rational(2,3)
-  call expect(a**2 == rational(4, 9), "Rational-integer exponentiation failed")
-  a = rational(2_ik, 3_ik)
-  call expect(a**0 == rational(1_ik, 1_ik), "Exponentiation failed for b=0")
-  call expect(a**(-2) == rational(9_ik, 4_ik), "Exponentiation failed for b=-2")
-  call expect(a**2 == rational(4_ik, 9_ik), "Exponentiation regression failed for b=2")
-  call expect(rational(1_ik, 1_ik)**7 == rational(1_ik, 1_ik), "Exponentiation failed for base=1")
-
-  call section("Edge cases")
+  ! Arithmetic ---------------------------------------------------------
+  a = rational(2, 3)
+  b = rational(3, 2)
+  call check(+a == a, '+(2/3) = 2/3')
+  call check(-a == rational(-2, 3), '-(2/3) = -2/3')
+  call check(a + b == rational(13, 6), '2/3 + 3/2 = 13/6')
+  call check(a + 1 == rational(5, 3), '2/3 + 1 = 5/3')
+  call check(1 + a == rational(5, 3), '1 + 2/3 = 5/3')
+  call check(a - b == rational(-5, 6), '2/3 - 3/2 = -5/6')
+  call check(a - 1 == rational(-1, 3), '2/3 - 1 = -1/3')
+  call check(1 - a == rational(1, 3), '1 - 2/3 = 1/3')
+  call check(a*b == rational(1, 1), '2/3 * 3/2 = 1')
+  call check(a*2 == rational(4, 3), '2/3 * 2 = 4/3')
+  call check(2*a == rational(4, 3), '2 * 2/3 = 4/3')
+  call check(a/b == rational(4, 9), '(2/3) / (3/2) = 4/9')
+  call check(a/2 == rational(1, 3), '(2/3) / 2 = 1/3')
+  call check(2/a == rational(3, 1), '2 / (2/3) = 3')
+  call check(a%inverse() == 1/a, 'inverse(2/3) = 1/(2/3)')
+  call check(a**2 == rational(4, 9), '(2/3)**2 = 4/9')
+  call check(a**0 == rational(1_ik, 1_ik), '(2/3)**0 = 1')
+  call check(a**(-2) == rational(9_ik, 4_ik), '(2/3)**(-2) = 9/4')
+  call check(rational(1_ik, 1_ik)**7 == rational(1_ik, 1_ik), '1**7 = 1')
+  a = rational(-2_ik, 3_ik)
+  call check(a%inverse() == rational(-3_ik, 2_ik), 'inverse(-2/3) = -3/2')
+  call check(a**(-1) == rational(-3_ik, 2_ik), '(-2/3)**(-1) = -3/2')
   a = rational(yoog, 2_ir)
   b = rational(2_ir, yoog)
-  call expect(a*b == 1, "Multiplication overflow failed")
+  call check(a*b == 1, 'huge/2 * 2/huge = 1 without overflow')
+  a = rational(1_ir, 2*10_ir**17)
+  b = rational(1_ir, 3*10_ir**17)
+  call check(a + b == rational(1_ir, 12*10_ir**16), 'sum with large common denominator factor')
 
-  call section("is_integer")
-  a = rational(4_ik, 2_ik)
-  call expect(a%is_integer(), "is_integer failed: 4/2 simplifies to 2, should be true")
-  a = rational(1_ik, 3_ik)
-  call expect(.not. a%is_integer(), "is_integer failed: 1/3 should be false")
-  a = rational(0_ik, 1_ik)
-  call expect(a%is_integer(), "is_integer failed: 0 should be true")
+  ! is_integer ---------------------------------------------------------
+  a = rational(4, 2)
+  call check(a%is_integer(), 'is_integer(4/2)')
+  a = rational(1, 3)
+  call check(.not. a%is_integer(), '.not. is_integer(1/3)')
+  a = 0
+  call check(a%is_integer(), 'is_integer(0)')
 
-  call section("abs")
-  a = rational(-1, 2)
-  call expect(abs(a) == rational(1, 2), "Absolute value failed")
-  a = rational(1, 2)
-  call expect(abs(a) == rational(1, 2), "Absolute value failed")
-
-  call section("min")
+  ! abs, sign, min, max ------------------------------------------------
+  call check(abs(rational(-1, 2)) == rational(1, 2), 'abs(-1/2) = 1/2')
+  call check(abs(rational(1, 2)) == rational(1, 2), 'abs(1/2) = 1/2')
+  a = rational(3_ik, 4_ik)
+  b = rational(-1_ik, 5_ik)
+  call check(sign(a, b) == rational(-3_ik, 4_ik), 'sign(3/4, -1/5) = -3/4')
+  call check(sign(a, a) == a, 'sign(3/4, 3/4) = 3/4')
+  call check(sign(b, a) == rational(1_ik, 5_ik), 'sign(-1/5, 3/4) = 1/5')
+  call check(sign(a, rational(0)) == a, 'sign(3/4, 0) = 3/4, like the intrinsic')
   a = rational(2, 3)
   b = rational(3, 2)
-  call expect(min(a,b) == a, "Rational-rational minimum failed")
+  call check(min(a, b) == a, 'min(2/3, 3/2) = 2/3')
+  call check(max(a, b) == b, 'max(2/3, 3/2) = 3/2')
 
-  call section("max")
-  a = rational(2, 3)
-  b = rational(3, 2)
-  call expect(max(a,b) == b, "Rational-rational maximum failed")
+  ! Rounding -----------------------------------------------------------
+  call check(floor(rational(4_ik, 2_ik)) == 2_ir, 'floor(4/2) = 2')
+  call check(floor(rational(7_ik, 3_ik)) == 2_ir, 'floor(7/3) = 2')
+  call check(floor(rational(-7_ik, 3_ik)) == -3_ir, 'floor(-7/3) = -3')
+  call check(floor(rational(-6_ik, 3_ik)) == -2_ir, 'floor(-6/3) = -2')
+  call check(ceiling(rational(7_ik, 3_ik)) == 3_ir, 'ceiling(7/3) = 3')
+  call check(ceiling(rational(-7_ik, 3_ik)) == -2_ir, 'ceiling(-7/3) = -2')
+  call check(ceiling(rational(4_ik, 2_ik)) == 2_ir, 'ceiling(4/2) = 2')
+  call check(ceiling(rational(-6_ik, 3_ik)) == -2_ir, 'ceiling(-6/3) = -2')
+  call check(trunc(rational(7_ik, 3_ik)) == 2_ir, 'trunc(7/3) = 2')
+  call check(trunc(rational(-7_ik, 3_ik)) == -2_ir, 'trunc(-7/3) = -2')
+  call check(trunc(rational(6_ik, 3_ik)) == 2_ir, 'trunc(6/3) = 2')
+  call check(floor(rational(-7_ik, 3_ik)) /= trunc(rational(-7_ik, 3_ik)), &
+    'floor(-7/3) /= trunc(-7/3)')
+  call check(round(rational(7_ik, 4_ik)) == 2_ir, 'round(7/4) = 2')
+  call check(round(rational(5_ik, 4_ik)) == 1_ir, 'round(5/4) = 1')
+  call check(round(rational(1_ik, 2_ik)) == 1_ir, 'round(1/2) = 1, ties away from zero')
+  call check(round(rational(-1_ik, 2_ik)) == -1_ir, 'round(-1/2) = -1, ties away from zero')
+  call check(round(rational(4_ik, 2_ik)) == 2_ir, 'round(4/2) = 2')
 
-  call section("dot_product")
-  u = [rational(1, 2), rational(2, 3)]
-  v = [rational(3, 4), rational(4, 5)]
-  call expect(dot_product(u, v) == rational(109, 120), "dot_product failed")
+  ! mod and divmod -----------------------------------------------------
+  call check(mod(rational(7, 3), rational(1, 2)) == rational(1, 3), 'mod(7/3, 1/2) = 1/3')
+  call check(mod(rational(3, 2), rational(1, 2)) == 0, 'mod(3/2, 1/2) = 0')
+  call check(mod(rational(-7, 3), rational(1, 2)) == rational(-1, 3), &
+    'mod(-7/3, 1/2) = -1/3, sign of a')
+  a = rational(7_ik, 3_ik)
+  b = rational(1_ik, 2_ik)
+  call divmod(a, b, q, r)
+  call check(q == 4_ir, 'divmod(7/3, 1/2) quotient = 4')
+  call check(r == rational(1_ik, 3_ik), 'divmod(7/3, 1/2) remainder = 1/3')
+  call check(b*rational(q, 1_ir) + r == a, 'divmod: b*q + r = a')
+  call divmod(rational(3, 2), rational(1, 2), q, r)
+  call check(q == 3_ir .and. r == 0, 'divmod(3/2, 1/2) = 3, 0')
 
-  call section("matmul")
+  ! Array intrinsics ---------------------------------------------------
+  u2 = [rational(1, 2), rational(2, 3)]
+  v2 = [rational(3, 4), rational(4, 5)]
+  call check(dot_product(u2, v2) == rational(109, 120), 'dot_product = 109/120')
   m(:,1) = [rational(1, 2), rational(1, 3)]
   m(:,2) = [rational(1, 1), rational(2, 3)]
-  u = [rational(1, 4), rational(3, 4)]
-  v = [rational(7, 8), rational(7, 12)]
-  call expect(all(matmul(m, u) == v), "matmul for matrix-vector failed")
+  u2 = [rational(1, 4), rational(3, 4)]
+  v2 = [rational(7, 8), rational(7, 12)]
+  call check(all(matmul(m, u2) == v2), 'matmul, matrix-vector')
   n(:,1) = [rational(1, 4), rational(3, 4)]
   n(:,2) = [rational(1, 2), rational(1, 1)]
   p(:,1) = [rational(7, 8), rational(7, 12)]
   p(:,2) = [rational(5, 4), rational(5, 6)]
-  call expect(all(matmul(m, n) == p), "matmul for matrix-matrix failed")
-
-  call section("transpose")
-  m(:,1) = [rational(1, 2), rational(1, 3)]
-  m(:,2) = [rational(1, 1), rational(2, 3)]
+  call check(all(matmul(m, n) == p), 'matmul, matrix-matrix')
+  r23 = rational(1_ik, 2_ik)
+  v3 = rational(2_ik)
+  w = matmul(r23, v3)
+  call check(size(w) == 2 .and. all(w == 3), 'matmul, non-square matrix-vector')
   n(:,1) = [rational(1, 2), rational(1, 1)]
   n(:,2) = [rational(1, 3), rational(2, 3)]
-  call expect(all(transpose(m) == n), "transpose failed")
+  call check(all(transpose(m) == n), 'transpose')
+  call check(sum([rational(1, 2), rational(2, 3), rational(1, 6)]) == rational(4, 3), &
+    'sum([1/2, 2/3, 1/6]) = 4/3')
+  call check(sum([rational(3, 5)]) == rational(3, 5), 'sum([3/5]) = 3/5')
+  call check(sum(empty) == 0, 'sum of empty array = 0')
+  call check(product([rational(1, 2), rational(2, 3), rational(3, 4)]) == rational(1, 4), &
+    'product([1/2, 2/3, 3/4]) = 1/4')
+  call check(product([rational(3, 5)]) == rational(3, 5), 'product([3/5]) = 3/5')
+  call check(product([rational(1, 2), rational(0), rational(3, 4)]) == 0, &
+    'product with a zero element = 0')
+  call check(product(empty) == 1, 'product of empty array = 1')
 
-  call section("random_number")
-  ord = 10
-  call set_order(ord)
+  ! random_number and set_order ----------------------------------------
+  call set_order(10)
   call random_number(m)
-  call expect(all(m >= 0) .and. all(m <= 1), "random_number failed")
+  call check(all(m >= 0) .and. all(m <= 1), 'random_number in [0, 1]')
+  call check(all(mod(10_ir, m%get_den()) == 0), 'random_number denominators divide 10')
+  call set_order(7)
+  call random_number(c)
+  call check(c >= 0 .and. c <= 1 .and. mod(7_ir, c%get_den()) == 0, 'set_order(7)')
 
-  call section("floor")
-  call expect(floor(rational(4_ik, 2_ik)) == 2_ir, "floor failed for exact positive integer")
-  call expect(floor(rational(7_ik, 3_ik)) == 2_ir, "floor failed for positive fraction (7/3)")
-  call expect(floor(rational(-7_ik, 3_ik)) == -3_ir, "floor failed for negative fraction (-7/3)")
-  call expect(floor(rational(-6_ik, 3_ik)) == -2_ir, "floor failed for negative exact (-6/3)")
-
-  call section("ceiling")
-  call expect(ceiling(rational(7_ik, 3_ik)) == 3_ir, "ceiling failed for positive fraction (7/3)")
-  call expect(ceiling(rational(-7_ik, 3_ik)) == -2_ir, "ceiling failed for negative fraction (-7/3)")
-  call expect(ceiling(rational(4_ik, 2_ik)) == 2_ir, "ceiling failed for exact positive integer")
-  call expect(ceiling(rational(-6_ik, 3_ik)) == -2_ir, "ceiling failed for negative exact integer")
-
-  call section("trunc")
-  call expect(trunc(rational(7_ik, 3_ik)) == 2_ir, "trunc failed for positive fraction (7/3)")
-  call expect(trunc(rational(-7_ik, 3_ik)) == -2_ir, "trunc failed for negative fraction (-7/3)")
-  call expect(trunc(rational(6_ik, 3_ik)) == 2_ir, "trunc failed for exact positive integer")
-  call expect(floor(rational(-7_ik, 3_ik)) /= trunc(rational(-7_ik, 3_ik)), "floor and trunc should differ for negative non-integer")
-
-  call section("round")
-  call expect(round(rational(7_ik, 4_ik)) == 2_ir, "round failed for 7/4 (rounds up to 2)")
-  call expect(round(rational(5_ik, 4_ik)) == 1_ir, "round failed for 5/4 (rounds down to 1)")
-  call expect(round(rational(1_ik, 2_ik)) == 1_ir, "round failed for 1/2 tie (should round to 1)")
-  call expect(round(rational(-1_ik, 2_ik)) == -1_ir, "round failed for -1/2 tie (should round to -1)")
-  call expect(round(rational(4_ik, 2_ik)) == 2_ir, "round failed for exact integer")
-
-  call section("sign")
-  a = rational(3_ik, 4_ik)
-  b = rational(-1_ik, 5_ik)
-  !! Sign transfer: magnitude of a, sign of b
-  call expect(sign(a, b) == rational(-3_ik, 4_ik), "sign failed: positive a, negative b")
-  call expect(sign(a, a) == a, "sign failed: positive a, positive b")
-  call expect(sign(b, a) == rational(1_ik, 5_ik), "sign failed: negative a, positive b")
-  !! Zero as b: treat as non-negative (matches intrinsic convention)
-  a = rational(3_ik, 4_ik)
-  b = rational(0_ik, 1_ik)
-  call expect(sign(a, b) == rational(3_ik, 4_ik), "sign failed: b == 0 should yield non-negative result")
-
-  call section("compare")
-  a = rational(2_ik, 3_ik)
-  b = rational(3_ik, 2_ik)
-  call expect(compare(a, b) == -1, "compare failed: a < b should return -1")
-  call expect(compare(b, a) == 1, "compare failed: a > b should return 1")
-  call expect(compare(a, a) == 0, "compare failed: a == a should return 0")
-  !! Same value, different representation (relies on simplify invariant)
-  call expect(compare(rational(2_ik, 4_ik), rational(1_ik, 2_ik)) == 0, "compare failed: 2/4 and 1/2 should be equal")
-
-  call section("mod")
-  !! Positive dividend and divisor
-  !! 7/3 mod 1/2: trunc(7/3 / (1/2)) = trunc(14/3) = 4; rem = 7/3 - 4*(1/2) = 7/3 - 2 = 1/3
-  a = rational(7_ik, 3_ik)
-  b = rational(1_ik, 2_ik)
-  call expect(mod(a, b) == rational(1_ik, 3_ik), "mod failed for positive a, positive b")
-  !! Exact multiple: remainder is zero
-  a = rational(3_ik, 2_ik)
-  b = rational(1_ik, 2_ik)
-  call expect(mod(a, b) == rational(0_ik, 1_ik), "mod failed: exact multiple should give zero remainder")
-  !! Negative dividend: remainder has same sign as dividend (matches Fortran mod)
-  a = rational(-7_ik, 3_ik)
-  b = rational(1_ik, 2_ik)
-  !! trunc(-14/3) = -4; rem = -7/3 - (-4)*(1/2) = -7/3 + 2 = -1/3
-  call expect(mod(a, b) == rational(-1_ik, 3_ik), "mod failed for negative dividend")
-
-  call section("divmod")
-  a = rational(7_ik, 3_ik)
-  b = rational(1_ik, 2_ik)
-  !! Expected: q = trunc(14/3) = 4, r = 1/3
-  block
-    integer(ir)    :: q
-    type(rational) :: r
-    call divmod(a, b, q, r)
-    call expect(q == 4_ir, "divmod failed: wrong quotient")
-    call expect(r == rational(1_ik, 3_ik), "divmod failed: wrong remainder")
-    !! Reconstruction: b*q + r == a
-    call expect(b * rational(q, 1_ir) + r == a, "divmod failed: b*q + r /= a")
-  end block
-  !! Exact division: remainder zero, quotient exact
-  a = rational(3_ik, 2_ik)
-  b = rational(1_ik, 2_ik)
-  block
-    integer(ir)    :: q
-    type(rational) :: r
-    call divmod(a, b, q, r)
-    call expect(q == 3_ir, "divmod failed: exact division quotient")
-    call expect(r == rational(0_ik, 1_ik), "divmod failed: exact division remainder should be zero")
-  end block
-
-  call section("sum")
-  !! Known result: 1/2 + 2/3 + 1/6 = 3/6 + 4/6 + 1/6 = 8/6 = 4/3
-  u = [rational(1_ik, 2_ik), rational(2_ik, 3_ik)]
-  call expect(sum([rational(1_ik, 2_ik), rational(2_ik, 3_ik), rational(1_ik, 6_ik)]) == rational(4_ik, 3_ik), "sum failed for three-element array")
-  !! Single element: sum == element
-  call expect(sum([rational(3_ik, 5_ik)]) == rational(3_ik, 5_ik), "sum failed for single-element array")
-  !! Sum of empty array should be zero (additive identity)
-  block
-    type(rational) :: empty(0)
-    call expect(sum(empty) == rational(0_ik, 1_ik), "sum failed for empty array: expected 0")
-  end block
-
-  call section("product")
-  !! Known result: 1/2 * 2/3 * 3/4 = 6/24 = 1/4
-  call expect(product([rational(1_ik, 2_ik), rational(2_ik, 3_ik), rational(3_ik, 4_ik)]) == rational(1_ik, 4_ik), "product failed for three-element array")
-  !! Single element
-  call expect(product([rational(3_ik, 5_ik)]) == rational(3_ik, 5_ik), "product failed for single-element array")
-  !! Product containing zero: result is zero
-  call expect(product([rational(1_ik, 2_ik), rational(0_ik, 1_ik), rational(3_ik, 4_ik)]) == rational(0_ik, 1_ik), "product failed: array containing zero should give zero")
-  !! Empty array should be one (multiplicative identity)
-  block
-    type(rational) :: empty(0)
-    call expect(product(empty) == rational(1_ik, 1_ik), "product failed for empty array: expected 1")
-  end block
-
-  call section("Regressions")
-  !! Real conversion gives the simplest exact fraction
-  call expect(rational(1.0_rk/3) == rational(1_ik, 3_ik), "real conversion failed for 1/3")
-  call expect(rational(1.0e5_rk) == 100000, "real conversion failed for 1e5")
-  call expect(rational(-2.5_rk) == rational(-5_ik, 2_ik), "real conversion failed for -2.5")
-  call expect(rational("0.75") == rational(3_ik, 4_ik), "character conversion failed for 0.75")
-  !! Reciprocal of a negative keeps the denominator positive
-  a = rational(-2_ik, 3_ik)
-  call expect(a%inverse() == rational(-3_ik, 2_ik), "inverse failed for negative")
-  call expect(a**(-1) == rational(-3_ik, 2_ik), "negative power failed for negative base")
-  !! int() truncates like the intrinsic
-  call expect(int(rational(7_ik, 2_ik)) == 3, "int failed: should truncate 7/2 to 3")
-  call expect(int(rational(-7_ik, 2_ik)) == -3, "int failed: should truncate -7/2 to -3")
-  !! Comparison near the int64 limit must not overflow
-  a = rational(yoog - 1, yoog)
-  b = rational(yoog - 2, yoog - 1)
-  call expect(a > b, "comparison failed near int64 limit")
-  call expect(-a < -b, "negative comparison failed near int64 limit")
-  !! Addition cancels common denominator factors before multiplying
-  a = rational(1_ir, 2*10_ir**17)
-  b = rational(1_ir, 3*10_ir**17)
-  call expect(a + b == rational(1_ir, 12*10_ir**16), "addition failed for large common denominator")
-  !! Non-square matrix-vector product
-  block
-    type(rational) :: r23(2,3), v3(3), w(2)
-    r23 = rational(1_ik, 2_ik)
-    v3 = rational(2_ik)
-    w = matmul(r23, v3)
-    call expect(size(w) == 2 .and. all(w == 3), "matmul failed for non-square matrix-vector")
-  end block
-
-  write(*,*)
-  if (nfail > 0) then
-    write(*,"(I0,A)") nfail, " check(s) failed"
-    error stop 1
-  end if
-  write(*,"(A)") "All tests passed"
+  print '(i0, a, i0, a)', ncheck - nfail, ' of ', ncheck, ' checks passed'
+  if (nfail > 0) error stop 1
 
 contains
 
-!***********************************************************************
-
-subroutine section(name)
-!! Start a group of checks
-  character(*), intent(in) :: name
-  write(*,"(A)") name
-end subroutine section
-
-!***********************************************************************
-
-subroutine expect(cond, msg)
-!! Record a failed check
+subroutine check(cond, name)
   logical, intent(in) :: cond
-  character(*), intent(in) :: msg
-  if (cond) return
-  nfail = nfail + 1
-  write(*,"(2X,'FAIL: ',A)") msg
-end subroutine expect
+  character(*), intent(in) :: name
+  ncheck = ncheck + 1
+  if (.not. cond) then
+    nfail = nfail + 1
+    print '(a)', 'FAIL: ' // name
+  end if
+end subroutine check
 
-end program rationals_test
+end program test_rationals
