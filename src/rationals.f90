@@ -281,7 +281,8 @@ end function is_integer
 !-----------------------------------------------------------------------
 
 subroutine write_formatted(self, unit, iotype, v_list, iostat, iomsg)
-  !! Write formatted rational, in the same form as char()
+  !! Write formatted rational, in the same form as char(); list-directed
+  !! output starts with a blank
 
   class(rational), intent(in) :: self
   integer, intent(in)         :: unit
@@ -290,9 +291,14 @@ subroutine write_formatted(self, unit, iotype, v_list, iostat, iomsg)
   integer, intent(out)        :: iostat
   character(*), intent(inout) :: iomsg
 
-  associate(unused => v_list, unused2 => iotype); end associate
+  associate(unused => v_list); end associate
 
-  write(unit,"(A)", advance="no", iostat=iostat, iomsg=iomsg) trim(rat_str(self))
+  ! ifx and nvfortran put no separator between list-directed derived-type items
+  if (iotype == "LISTDIRECTED") then
+    write(unit,"(A)", advance="no", iostat=iostat, iomsg=iomsg) " "//trim(rat_str(self))
+  else
+    write(unit,"(A)", advance="no", iostat=iostat, iomsg=iomsg) trim(rat_str(self))
+  end if
 
 end subroutine write_formatted
 

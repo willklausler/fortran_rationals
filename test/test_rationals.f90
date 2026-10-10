@@ -73,6 +73,12 @@ program test_rationals
   close(u)
   call check(a == rational(1, 2) .and. b == rational(-3, 4), 'read(dt) of 1/2 -3/4')
   open(newunit=u, status='scratch')
+  write(u, *) rational(5, 6), rational(-7), ' end'   ! ifx writes no blank before 'end'
+  rewind(u)
+  read(u, '(dt, dt)') a, b
+  close(u)
+  call check(a == rational(5, 6) .and. b == -7, 'list-directed write separates items')
+  open(newunit=u, status='scratch')
   write(u, '(a)') 'x/y end'
   rewind(u)
   read(u, *, iostat=ios) a

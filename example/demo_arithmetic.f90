@@ -8,7 +8,7 @@ program demo_arithmetic
   a = rational(2, 3)                         ! 2/3
   b = rational("3/4")                        ! 3/4; also "-2" or "0.75"
   c = rational(0.75_dp)                      ! 3/4: simplest fraction equal to the real
-  print '(a)', char(rational(6, -4))         ! -3/2: lowest terms, positive denominator
+  print '(a)', trim(char(rational(6, -4)))   ! -3/2: lowest terms, positive denominator
 
   print *, a + b, a - b, a*b, a/b            ! 17/12 -1/12 1/2 8/9
   print *, a**(-2), 1 - a, b == c            ! 9/4 1/3 T
