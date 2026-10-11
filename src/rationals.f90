@@ -730,26 +730,38 @@ elemental type(rational) function int_div_rat(a, b) result(c)
 end function int_div_rat
 
 elemental type(rational) function rat_power_int(a, b) result(c)
-  !! Raise rational to integer power
+  !! Raise rational to integer power, by repeated squaring
 
   type(rational), intent(in) :: a
   integer(ik), intent(in) :: b
 
-  integer(ik) :: i
+  type(rational) :: x
+  integer(ir) :: n
 
+  ! int64 first: abs(-huge(1)-1) does not fit in int32
+  n = abs(int(b, ir))
+  if (b < 0) then
+    x = inverse(a)
+  else
+    x = a
+  end if
+
+  ! Powers of coprime num and den stay coprime, so no reduction is needed.
+  ! x is squared only while a higher bit of n remains, so every product
+  ! divides the result and overflows only if the result does.
   c%num = 1
   c%den = 1
-
-  if (b == 0) return
-
-  do i = 1, abs(b)
-    c%num = mul_chk(c%num, a%num)
-    c%den = mul_chk(c%den, a%den)
+  do while (n > 0)
+    if (mod(n, 2_ir) == 1) then
+      c%num = mul_chk(c%num, x%num)
+      c%den = mul_chk(c%den, x%den)
+    end if
+    n = n/2
+    if (n > 0) then
+      x%num = mul_chk(x%num, x%num)
+      x%den = mul_chk(x%den, x%den)
+    end if
   end do
-
-  if (b < 0) then
-    c = inverse(c)
-  end if
 
 end function rat_power_int
 

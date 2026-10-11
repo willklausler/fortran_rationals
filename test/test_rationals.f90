@@ -183,6 +183,17 @@ program test_rationals
   call check(a**0 == rational(1_ik, 1_ik), '(2/3)**0 = 1')
   call check(a**(-2) == rational(9_ik, 4_ik), '(2/3)**(-2) = 9/4')
   call check(rational(1_ik, 1_ik)**7 == rational(1_ik, 1_ik), '1**7 = 1')
+  call check(rational(0)**0 == 1 .and. rational(0)**5 == 0, '0**0 = 1, 0**5 = 0')
+  call check(rational(-1)**huge(1) == -1, '(-1)**huge(1) = -1, in log(n) steps')
+  call check(rational(-1)**(-huge(1)-1) == 1, '(-1)**(-huge(1)-1) = 1')
+  call check(rational(2)**62 == rational(2_ir**62, 1_ir), '2**62, the largest power of 2 that fits')
+  call check(rational(-3, 2)**39 == rational(-3_ir**39, 2_ir**39), '(-3/2)**39')
+  a = rational(2, 3)
+  b = 1
+  do i = 1, 10
+    b = b*a
+    call check(a**i == b .and. a**(-i) == 1/b, '(2/3)**(+-k) = repeated product')
+  end do
   a = rational(-2_ik, 3_ik)
   call check(a%inverse() == rational(-3_ik, 2_ik), 'inverse(-2/3) = -3/2')
   call check(a**(-1) == rational(-3_ik, 2_ik), '(-2/3)**(-1) = -3/2')
