@@ -15,6 +15,9 @@ program test_rationals
   character(80) :: line
   type(rational) :: a, b, c, r
   type(rational) :: u2(2), v2(2), m(2, 2), n(2, 2), p(2, 2), r23(2, 3), v3(3), w(2), empty(0)
+  integer :: j
+  integer(ir), allocatable :: qs(:, :)
+  type(rational), allocatable :: x(:), y(:), pa(:, :), pb(:, :), na(:, :), nb(:, :), rs(:, :)
 
   ! gcf and lcm --------------------------------------------------------
   call check(gcf(0, 2) == 2, 'gcf(0, 2) = 2')
@@ -293,6 +296,30 @@ program test_rationals
   call check(product([rational(1, 2), rational(0), rational(3, 4)]) == 0, &
     & 'product with a zero element = 0')
   call check(product(empty) == 1, 'product of empty array = 1')
+
+  ! Identities over all pairs of p/q, |p| <= 8, 1 <= q <= 8 -----------
+  x = [((rational(i, j), i = -8, 8), j = 1, 8)]
+  y = pack(x, x /= 0)
+  pa = spread(x, 2, size(x))                 ! pa(i, j) = x(i)
+  pb = spread(x, 1, size(x))                 ! pb(i, j) = x(j)
+  na = spread(x, 2, size(y))                 ! the same with a nonzero
+  nb = spread(y, 1, size(x))                 ! second element
+  call check(all((pa + pb) - pb == pa), '(a + b) - b = a')
+  call check(all(pa + pb == pb + pa .and. pa*pb == pb*pa), 'a + b = b + a, a*b = b*a')
+  call check(all(pa*(pb + pb) == pa*pb + pa*pb), 'a*(b + b) = a*b + a*b')
+  call check(all((na*nb)/nb == na .and. na/nb*nb == na), '(a*b)/b = a, a/b*b = a')
+  call check(all((pa < pb) .eqv. (real(pa) < real(pb))), 'a < b agrees with real(a) < real(b)')
+  call check(all((pa == pb) .eqv. (compare(pa, pb) == 0)), 'compare(a, b) = 0 agrees with ==')
+  call check(all(compare(pa, pb) == -compare(pb, pa)), 'compare(a, b) = -compare(b, a)')
+  call check(all(rational(real(x)) == x), 'rational(real(a)) = a')
+  call check(all(rational(char(x)) == x), 'rational(char(a)) = a')
+  call check(all(rational(floor(x), 1_ir) <= x .and. x < rational(floor(x) + 1, 1_ir)), &
+    & 'floor(a) <= a < floor(a) + 1')
+  allocate(qs(size(x), size(y)), rs(size(x), size(y)))
+  call divmod(na, nb, qs, rs)
+  call check(all(nb*rational(qs, 1_ir) + rs == na .and. abs(rs) < abs(nb)), &
+    & 'divmod: b*q + r = a, |r| < |b|')
+  deallocate(qs, rs)                         ! else gfortran 14 LeakSanitizer reports qs
 
   ! random_number and set_order ----------------------------------------
   call set_order(10)
