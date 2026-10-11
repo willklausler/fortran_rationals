@@ -2,11 +2,21 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "fortran_rationals: exact rational numbers with checked arithmetic"
 type: software
+abstract: >-
+  fortran_rationals is a Fortran module, rationals, with the derived type
+  rational: an exact fraction with a 64-bit numerator and denominator, always
+  in lowest terms. It overloads the arithmetic and comparison operators and
+  the numeric and array intrinsics, so a rational behaves like a numeric type.
+  Every operation checks for integer overflow and stops instead of returning
+  a wrong value; comparison uses continued fractions and never overflows.
+  Reals convert to the simplest fraction that converts back exactly, and text
+  converts both ways. It is Fortran 2018 and builds with fpm or make.
 authors:
   - family-names: Klausler
     given-names: Will
+    orcid: "https://orcid.org/0009-0000-4313-3696"
 version: 0.2.0
-date-released: 2026-10-10
+date-released: 2026-10-11
 license: MIT
 repository-code: "https://github.com/willklausler/fortran_rationals"
 url: "https://willklausler.github.io/fortran_rationals/"

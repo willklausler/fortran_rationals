@@ -3,7 +3,7 @@
 > Fortran module `rationals`: the derived type `rational`, an exact fraction with 64-bit numerator and denominator, with arithmetic and comparison operators and the numeric intrinsics overloaded. Overflow stops the program instead of returning a wrong value. Fortran 2018, fpm or make. This file is the complete API reference for tools and coding agents; it is checked against the source in CI.
 
 Use: `use rationals` (everything) or `use rationals, only: rational, operator(+), ...`.
-fpm dependency: `fortran_rationals = { git = "https://github.com/willklausler/fortran_rationals" }`
+fpm dependency: `fortran_rationals = { git = "https://github.com/willklausler/fortran_rationals", tag = "v0.2.0" }`
 Kinds are not exported: use `int32`, `int64`, `real64` from `iso_fortran_env`.
 
 ## Conventions (read first)
@@ -11,7 +11,7 @@ Kinds are not exported: use `int32`, `int64`, `real64` from `iso_fortran_env`.
 - A `rational` is num/den with `int64` parts, always in lowest terms with den > 0. Zero is 0/1. A declared but unassigned `rational` is 0.
 - The components are private. Read them with `r%get_num()` and `r%get_den()`; build values with the constructor `rational(...)` or by assignment.
 - `==` and `/=` are exact. Because values are in lowest terms they compare numerator and denominator. `<`, `>`, `<=`, `>=` and `compare` never overflow.
-- Mixed operations take a rational and an `int32` integer. Use `rational(n, d)` with `int64` arguments for larger integers. Reals are converted only by the constructor or by assignment, never implicitly in an operator.
+- Mixed operations take a rational and an `int32` integer. This is deliberate: it keeps the operator set small, and default integer literals are `int32`. Wrap an `int64` value as `rational(n, 1_int64)`. Reals are converted only by the constructor or by assignment, never implicitly in an operator, because a real is rarely the exact value the user means.
 - Error policy: the library stops with `error stop` and a message on integer overflow (`rational: integer overflow`), division by zero (`rational: division by zero`), text that is not a rational (`rational: cannot parse character input`), reals beyond the int64 range or NaN (`rational: real value out of range`), results that do not fit the returned integer kind (`int: ...`, `gcf: ...`, `lcm: ...`), and an order below 1 (`set_order: order must be positive`). Errors cannot be caught. A failed derived-type `read` returns `iostat > 0` instead.
 - Addition, multiplication and comparison keep intermediate integers small (Knuth's cancellation before multiplying, continued fractions for comparison), so overflow means the exact result itself does not fit in 64 bits.
 - `random_number` uses module state set by `set_order`; it is not thread safe.
@@ -88,9 +88,10 @@ E = elemental. Arguments `a`, `b`, `r` are rational unless stated.
 
 ## Compiler notes
 
-Tested in CI with gfortran 13 and 14 (Linux, macOS, Windows), ifx 2026 (Linux, Windows), LLVM flang 21 and nvfortran 26 (Linux).
+Tested in CI with gfortran 14 (Linux, macOS, Windows), gfortran 13 (Linux), ifx 2026 (Linux, Windows), LLVM flang 21 and nvfortran 26 (Linux).
 - nvfortran 26.3: list-directed `read(u, *) r` fails (end-of-file iostat, nothing read); `read(u, '(dt)') r` works.
 - ifx 2026.1: a `'(dt)'` read whose token ends the record returns an end-of-record iostat, although the value is read. List-directed output puts no blank between a rational and a following non-rational item (`print *, r, 'x'` gives `1/2x`).
+- gfortran 14 rejects a `rational` in a `namelist` group, because the type has private components. ifx and nvfortran accept it.
 - gfortran: a derived-type read whose token ends the record also consumes the following record, so the next `read` statement skips a line. libgfortran also leaks a little memory on that path, which LeakSanitizer reports in debug builds.
 
 ## Differs from

@@ -40,7 +40,7 @@ With [fpm](https://fpm.fortran-lang.org) 0.13 or later, add to your `fpm.toml`:
 
 ```toml
 [dependencies]
-fortran_rationals = { git = "https://github.com/willklausler/fortran_rationals" }
+fortran_rationals = { git = "https://github.com/willklausler/fortran_rationals", tag = "v0.2.0" }
 ```
 
 With make, which builds `build/make/libfortran_rationals.a` and the module file:
@@ -63,7 +63,8 @@ CI tests every push on:
 
 | Compiler | Linux | macOS | Windows |
 | --- | --- | --- | --- |
-| gfortran 13, 14 | yes | yes | yes |
+| gfortran 14 | yes | yes | yes |
+| gfortran 13 | yes | | |
 | ifx 2026 | yes | | yes |
 | LLVM flang 21 | yes | | |
 | nvfortran 26 | yes | | |
@@ -81,7 +82,8 @@ calculator with functions such as `add_fraction` and a decimal-places
 approximation for reals, but no operators. This package makes a rational
 behave like a numeric type: operators, comparisons, the numeric and array
 intrinsics, exact conversion from reals, and overflow checks on every
-operation, packaged for fpm and tested on four compilers.
+operation, packaged for fpm and tested with gfortran, ifx, LLVM flang and
+nvfortran on Linux, macOS and Windows.
 
 ## References
 

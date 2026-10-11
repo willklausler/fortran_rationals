@@ -2,7 +2,7 @@
 
 All notable changes are listed here. The project follows [Semantic Versioning](https://semver.org).
 
-## [0.2.0] - 2026-10-10
+## [0.2.0] - 2026-10-11
 
 - Fixed: `rational(str)` and derived-type `read` ignored trailing text: `"1/2/3"`, `"3/4 junk"`, `"1 2"` and `"7,5"` gave 1/2, 3/4, 1 and 7. They are now errors.
 - Fixed: `**` took time linear in the exponent (`rational(-1)**huge(1)` ran for 45 s) and `abs(-huge(1)-1)` overflowed. It now squares repeatedly, and still stops on overflow.
