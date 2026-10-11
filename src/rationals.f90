@@ -357,27 +357,57 @@ pure subroutine rat_parse(str, r, ios)
   type(rational), intent(out) :: r
   integer, intent(out) :: ios
 
-  integer :: slash
+  integer :: slash, e, p
   real(rk) :: f
+  character(len(str)) :: s, m
 
-  slash = index(str, "/")
+  ! List-directed read stops quietly at a blank, comma or slash, so the
+  ! text is checked first: "1/2/3" or "3/4 junk" must not read as 1/2 or 3/4
+  ios = 1
+  s = adjustl(str)
+  slash = index(s, "/")
 
   if (slash /= 0) then
-    read(str(:slash-1), *, iostat=ios) r%num
-    if (ios == 0) read(str(slash+1:), *, iostat=ios) r%den
+    if (.not. is_int_text(trim(adjustl(s(:slash-1))))) return
+    if (.not. is_int_text(trim(adjustl(s(slash+1:))))) return
+    read(s(:slash-1), *, iostat=ios) r%num
+    if (ios == 0) read(s(slash+1:), *, iostat=ios) r%den
     if ((ios == 0) .and. (r%den == 0)) ios = 1
-  else if (scan(str, ".eEdD") /= 0) then
-    read(str, *, iostat=ios) f
+  else if (scan(s, ".eEdD") /= 0) then
+    ! [sign] digits [. digits] [exponent letter [sign] digits]
+    e = scan(s, "eEdD")
+    if (e == 0) e = len_trim(s) + 1
+    if (e <= len_trim(s)) then
+      if (.not. is_int_text(trim(s(e+1:)))) return
+    end if
+    m = s(:e-1)
+    p = index(m, ".")
+    if (p /= 0) then
+      if (verify(trim(m(p+1:)), "0123456789") /= 0) return
+      m = m(:p-1) // m(p+1:)
+    end if
+    if (.not. is_int_text(trim(m))) return
+    read(s, *, iostat=ios) f
     if (ios == 0) r = rat_const_real(f)
     return
   else
-    read(str, *, iostat=ios) r%num
+    if (.not. is_int_text(trim(s))) return
+    read(s, *, iostat=ios) r%num
     r%den = 1
   end if
 
   if (ios == 0) call simplify(r)
 
 end subroutine rat_parse
+
+pure logical function is_int_text(s) result(ok)
+  !! Whether s is an optional sign followed by one or more digits
+  character(*), intent(in) :: s
+  integer :: i0
+  i0 = 1
+  if (len(s) > 0) i0 = 1 + scan(s(1:1), "+-")
+  ok = len(s) >= i0 .and. verify(s(i0:), "0123456789") == 0
+end function is_int_text
 
 !-----------------------------------------------------------------------
 ! Constructors

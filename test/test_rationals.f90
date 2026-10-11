@@ -8,7 +8,9 @@ program test_rationals
 
   integer(ir), parameter :: yoog = huge(1_ir)
   integer :: ncheck = 0, nfail = 0
-  integer :: u, ios
+  character(*), parameter :: bad(*) = [character(6) :: '1/2/3', '1//2', '/2', '1/', '--1', &
+    & '1.2.3', '1/2x', '+', '.', '1e', '.-5', '1.5e+', '0x10', '1-2']
+  integer :: i, u, ios
   integer(ir) :: q
   character(80) :: line
   type(rational) :: a, b, c, r
@@ -84,6 +86,23 @@ program test_rationals
   read(u, *, iostat=ios) a
   close(u)
   call check(ios > 0, 'read of x/y is an error')
+  call check(rational('1/2') == rational(1, 2), 'rational("1/2") = 1/2')
+  call check(rational(' -3/4 ') == rational(-3, 4), 'rational(" -3/4 ") = -3/4')
+  call check(rational('2/-4') == rational(-1, 2), 'rational("2/-4") = -1/2')
+  call check(rational(' 3 / 4 ') == rational(3, 4), 'rational(" 3 / 4 ") = 3/4')
+  call check(rational('+5') == 5, 'rational("+5") = 5')
+  call check(rational('+.5e1') == 5, 'rational("+.5e1") = 5')
+  call check(rational('-1.25d0') == rational(-5, 4), 'rational("-1.25d0") = -5/4')
+  call check(rational('1.') == 1, 'rational("1.") = 1')
+  ! rational(str) stops on bad text, so test the parser through read(dt)
+  do i = 1, size(bad)
+    open(newunit=u, status='scratch')
+    write(u, '(a)') trim(bad(i)) // ' end'
+    rewind(u)
+    read(u, '(dt)', iostat=ios) a
+    close(u)
+    call check(ios > 0, 'read of "' // trim(bad(i)) // '" is an error')
+  end do
 
   ! Assignment ---------------------------------------------------------
   a = 2

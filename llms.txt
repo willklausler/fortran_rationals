@@ -25,7 +25,7 @@ Kinds are not exported: use `int32`, `int64`, `real64` from `iso_fortran_env`.
 | `rational(n, d)` E | n/d in lowest terms; `n`, `d` both `int32` or both `int64`; `d = 0` stops |
 | `rational(n)` E | n/1, `n` is `int32` |
 | `rational(x)` E | `x` is `real64`: the simplest fraction that converts back to exactly `x` (`rational(0.1_dp)` = 1/10); if none fits in 64 bits, the closest continued-fraction convergent that does |
-| `rational(str)` E | text `"n"`, `"n/d"` (blanks allowed) or a decimal real such as `"0.75"` or `"1e-3"`, which goes through `real64` |
+| `rational(str)` E | text `"n"`, `"n/d"` or a decimal real such as `"0.75"` or `"1e-3"`, which goes through `real64`; `n` and `d` are integers with an optional sign (`"2/-4"` is -1/2). Blanks are allowed before, after and around `/`; any other text, such as `"1/2/3"`, `"1 2"` or `"3/4 x"`, is an error |
 
 Assignment `r = s` (rational), `r = n` (`int32`) or `r = x` (`real64`, as `rational(x)`). Elemental.
 
