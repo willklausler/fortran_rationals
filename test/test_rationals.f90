@@ -12,7 +12,7 @@ program test_rationals
   integer(ir) :: q
   character(80) :: line
   type(rational) :: a, b, c, r
-  type(rational) :: u2(2), v2(2), m(2,2), n(2,2), p(2,2), r23(2,3), v3(3), w(2), empty(0)
+  type(rational) :: u2(2), v2(2), m(2, 2), n(2, 2), p(2, 2), r23(2, 3), v3(3), w(2), empty(0)
 
   ! gcf and lcm --------------------------------------------------------
   call check(gcf(0, 2) == 2, 'gcf(0, 2) = 2')
@@ -95,7 +95,7 @@ program test_rationals
   u2 = [rational(1, 2), rational(1, 3)]
   u2 = u2 - u2(1)*u2
   call check(all(u2 == [rational(1, 4), rational(1, 6)]), &
-    'array assignment that reads its own elements')
+    & 'array assignment that reads its own elements')
 
   ! Conversions --------------------------------------------------------
   a = 2
@@ -209,7 +209,7 @@ program test_rationals
   call check(trunc(rational(-7_ik, 3_ik)) == -2_ir, 'trunc(-7/3) = -2')
   call check(trunc(rational(6_ik, 3_ik)) == 2_ir, 'trunc(6/3) = 2')
   call check(floor(rational(-7_ik, 3_ik)) /= trunc(rational(-7_ik, 3_ik)), &
-    'floor(-7/3) /= trunc(-7/3)')
+    & 'floor(-7/3) /= trunc(-7/3)')
   call check(round(rational(7_ik, 4_ik)) == 2_ir, 'round(7/4) = 2')
   call check(round(rational(5_ik, 4_ik)) == 1_ir, 'round(5/4) = 1')
   call check(round(rational(1_ik, 2_ik)) == 1_ir, 'round(1/2) = 1, ties away from zero')
@@ -220,7 +220,7 @@ program test_rationals
   call check(mod(rational(7, 3), rational(1, 2)) == rational(1, 3), 'mod(7/3, 1/2) = 1/3')
   call check(mod(rational(3, 2), rational(1, 2)) == 0, 'mod(3/2, 1/2) = 0')
   call check(mod(rational(-7, 3), rational(1, 2)) == rational(-1, 3), &
-    'mod(-7/3, 1/2) = -1/3, sign of a')
+    & 'mod(-7/3, 1/2) = -1/3, sign of a')
   a = rational(7_ik, 3_ik)
   b = rational(1_ik, 2_ik)
   call divmod(a, b, q, r)
@@ -234,32 +234,32 @@ program test_rationals
   u2 = [rational(1, 2), rational(2, 3)]
   v2 = [rational(3, 4), rational(4, 5)]
   call check(dot_product(u2, v2) == rational(109, 120), 'dot_product = 109/120')
-  m(:,1) = [rational(1, 2), rational(1, 3)]
-  m(:,2) = [rational(1, 1), rational(2, 3)]
+  m(:, 1) = [rational(1, 2), rational(1, 3)]
+  m(:, 2) = [rational(1, 1), rational(2, 3)]
   u2 = [rational(1, 4), rational(3, 4)]
   v2 = [rational(7, 8), rational(7, 12)]
   call check(all(matmul(m, u2) == v2), 'matmul, matrix-vector')
-  n(:,1) = [rational(1, 4), rational(3, 4)]
-  n(:,2) = [rational(1, 2), rational(1, 1)]
-  p(:,1) = [rational(7, 8), rational(7, 12)]
-  p(:,2) = [rational(5, 4), rational(5, 6)]
+  n(:, 1) = [rational(1, 4), rational(3, 4)]
+  n(:, 2) = [rational(1, 2), rational(1, 1)]
+  p(:, 1) = [rational(7, 8), rational(7, 12)]
+  p(:, 2) = [rational(5, 4), rational(5, 6)]
   call check(all(matmul(m, n) == p), 'matmul, matrix-matrix')
   r23 = rational(1_ik, 2_ik)
   v3 = rational(2_ik)
   w = matmul(r23, v3)
   call check(size(w) == 2 .and. all(w == 3), 'matmul, non-square matrix-vector')
-  n(:,1) = [rational(1, 2), rational(1, 1)]
-  n(:,2) = [rational(1, 3), rational(2, 3)]
+  n(:, 1) = [rational(1, 2), rational(1, 1)]
+  n(:, 2) = [rational(1, 3), rational(2, 3)]
   call check(all(transpose(m) == n), 'transpose')
   call check(sum([rational(1, 2), rational(2, 3), rational(1, 6)]) == rational(4, 3), &
-    'sum([1/2, 2/3, 1/6]) = 4/3')
+    & 'sum([1/2, 2/3, 1/6]) = 4/3')
   call check(sum([rational(3, 5)]) == rational(3, 5), 'sum([3/5]) = 3/5')
   call check(sum(empty) == 0, 'sum of empty array = 0')
   call check(product([rational(1, 2), rational(2, 3), rational(3, 4)]) == rational(1, 4), &
-    'product([1/2, 2/3, 3/4]) = 1/4')
+    & 'product([1/2, 2/3, 3/4]) = 1/4')
   call check(product([rational(3, 5)]) == rational(3, 5), 'product([3/5]) = 3/5')
   call check(product([rational(1, 2), rational(0), rational(3, 4)]) == 0, &
-    'product with a zero element = 0')
+    & 'product with a zero element = 0')
   call check(product(empty) == 1, 'product of empty array = 1')
 
   ! random_number and set_order ----------------------------------------
