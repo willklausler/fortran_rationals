@@ -123,6 +123,8 @@ program test_rationals
   call check(real(a) == 0.5_rk, 'real(1/2) = 0.5')
   call check(int(rational(7_ik, 2_ik)) == 3, 'int(7/2) = 3')
   call check(int(rational(-7_ik, 2_ik)) == -3, 'int(-7/2) = -3, truncated')
+  call check(int(rational(-huge(1)) - 1) == -huge(1) - 1, 'int(-2**31) = -2**31, fits in int32')
+  call check(int(rational(huge(1))) == huge(1), 'int(huge(1)) = huge(1)')
   call check(rational(1.0_rk/3) == rational(1_ik, 3_ik), 'rational(1._dp/3) = 1/3')
   call check(rational(1.0e5_rk) == 100000, 'rational(1e5) = 100000')
   call check(rational(-2.5_rk) == rational(-5_ik, 2_ik), 'rational(-2.5) = -5/2')

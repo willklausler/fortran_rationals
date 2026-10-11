@@ -6,6 +6,8 @@ All notable changes are listed here. The project follows [Semantic Versioning](h
 
 - Fixed: `rational(str)` and derived-type `read` ignored trailing text: `"1/2/3"`, `"3/4 junk"`, `"1 2"` and `"7,5"` gave 1/2, 3/4, 1 and 7. They are now errors.
 - Fixed: `**` took time linear in the exponent (`rational(-1)**huge(1)` ran for 45 s) and `abs(-huge(1)-1)` overflowed. It now squares repeatedly, and still stops on overflow.
+- Fixed: `int(r)` stopped for r = -2147483648, which fits in `int32`.
+- `set_order(n)` stops with `set_order: order must be positive` for n < 1, instead of a misleading division by zero in a later `random_number`.
 - Fixed wrong results on nvfortran when an array assignment reads its own elements, such as a row update in Gaussian elimination: rational = rational is now intrinsic assignment.
 - List-directed output of a rational starts with a blank, so `print *, a, b` separates the values on ifx and nvfortran too.
 - `rational(str)` is elemental instead of impure elemental.

@@ -12,7 +12,7 @@ Kinds are not exported: use `int32`, `int64`, `real64` from `iso_fortran_env`.
 - The components are private. Read them with `r%get_num()` and `r%get_den()`; build values with the constructor `rational(...)` or by assignment.
 - `==` and `/=` are exact. Because values are in lowest terms they compare numerator and denominator. `<`, `>`, `<=`, `>=` and `compare` never overflow.
 - Mixed operations take a rational and an `int32` integer. Use `rational(n, d)` with `int64` arguments for larger integers. Reals are converted only by the constructor or by assignment, never implicitly in an operator.
-- Error policy: the library stops with `error stop` and a message on integer overflow (`rational: integer overflow`), division by zero (`rational: division by zero`), text that is not a rational (`rational: cannot parse character input`), reals beyond the int64 range or NaN (`rational: real value out of range`), and results that do not fit the returned integer kind (`int: ...`, `gcf: ...`, `lcm: ...`). Errors cannot be caught. A failed derived-type `read` returns `iostat > 0` instead.
+- Error policy: the library stops with `error stop` and a message on integer overflow (`rational: integer overflow`), division by zero (`rational: division by zero`), text that is not a rational (`rational: cannot parse character input`), reals beyond the int64 range or NaN (`rational: real value out of range`), results that do not fit the returned integer kind (`int: ...`, `gcf: ...`, `lcm: ...`), and an order below 1 (`set_order: order must be positive`). Errors cannot be caught. A failed derived-type `read` returns `iostat > 0` instead.
 - Addition, multiplication and comparison keep intermediate integers small (Knuth's cancellation before multiplying, continued fractions for comparison), so overflow means the exact result itself does not fit in 64 bits.
 - `random_number` uses module state set by `set_order`; it is not thread safe.
 
@@ -77,7 +77,7 @@ E = elemental. Arguments `a`, `b`, `r` are rational unless stated.
 | `matmul(a, b)` | `a(:,:)` times `b(:,:)` or `b(:)`; there is no vector-matrix form |
 | `transpose(a)` | `a(:,:)` |
 | `call random_number(r)` E | impure: r = nint(x*order)/order with x from the intrinsic `random_number`, so r is in [0, 1] and its denominator divides `order` |
-| `call set_order(n)` | sets `order` (`int32`, n > 0, default 10) for `random_number` |
+| `call set_order(n)` | sets `order` (`int32`, default 10) for `random_number`; n < 1 stops |
 
 ## Text I/O
 

@@ -536,7 +536,7 @@ elemental integer(ik) function rat_int(b) result(i)
   integer(ir) :: t
 
   t = rat_trunc(b)
-  if (abs(t) > huge(i)) then
+  if ((t < -int(huge(i), ir) - 1) .or. (t > huge(i))) then
     error stop "int: result does not fit in int32"
   end if
   i = int(t, ik)
@@ -937,6 +937,7 @@ end function inverse
 subroutine set_order(ord)
   !! Set the denominator used by random_number
   integer(ik), intent(in) :: ord
+  if (ord < 1) error stop "set_order: order must be positive"
   order = ord
 end subroutine set_order
 
