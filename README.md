@@ -3,6 +3,7 @@
 [![CI](https://github.com/willklausler/fortran_rationals/actions/workflows/ci.yml/badge.svg)](https://github.com/willklausler/fortran_rationals/actions/workflows/ci.yml)
 [![Docs](https://github.com/willklausler/fortran_rationals/actions/workflows/docs.yml/badge.svg)](https://willklausler.github.io/fortran_rationals/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23300374.svg)](https://doi.org/10.5281/zenodo.23300374)
 
 Exact rational numbers for modern Fortran: one derived type, `rational`, with
 the arithmetic operators and the numeric intrinsics overloaded. Overflow stops
@@ -95,7 +96,8 @@ Version 0.2.0. The API may still change before 1.0; changes are recorded in
 [CHANGELOG.md](CHANGELOG.md). Bug reports, questions and pull requests are
 welcome on [GitHub](https://github.com/willklausler/fortran_rationals/issues);
 see [CONTRIBUTING.md](CONTRIBUTING.md). To cite this package, use
-[CITATION.cff](CITATION.cff).
+[CITATION.cff](CITATION.cff) or the DOI [10.5281/zenodo.23300374](https://doi.org/10.5281/zenodo.23300374),
+which always points to the latest version.
 
 ## License
 
